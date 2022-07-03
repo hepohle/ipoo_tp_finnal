@@ -37,12 +37,12 @@ class Empresa
     public function getMensajeoperacion(){
         return $this->mensajeoperacion;
     }
-    public function setMensajeoperacion($mensajeoperacion){
-        $this->mensajeoperacion = $mensajeoperacion;
+    public static function setMensajeoperacion($mensajeoperacion){
+        Empresa::$mensajeoperacion = $mensajeoperacion;
     }
 
-    public function cargarDatos($enombre,$edireccion){
-        
+    public function cargarDatos($idempresa, $enombre,$edireccion){
+        $this->idempresa = $idempresa;
         $this->enombre = $enombre;
         $this->edireccion = $edireccion;
     }
@@ -126,7 +126,7 @@ class Empresa
         return $resp;
     }
 
-    public function listar($condicion = ''){
+    public static function listar($condicion = ''){
         $arregloEmpresa = null;
         $base = new BaseDatos();
         $consultaListar = "SELECT * FROM empresa";
@@ -148,10 +148,10 @@ class Empresa
                     array_push($arregloEmpresa, $objEmpresa);
                 }
             }else {
-                $this->setMensajeoperacion($base->getError());
+                Empresa::setMensajeoperacion($base->getError());
             }
         }else {
-            $this->setMensajeoperacion($base->getError());
+            Empresa::setMensajeoperacion($base->getError());
         }
         return $arregloEmpresa;
     }
