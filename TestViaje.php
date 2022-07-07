@@ -58,60 +58,47 @@ function menuEmpresas(){
         2. Cargar empresa\n
         3. Modificar empresa\n
         4. Eliminar empresa\n
-        5. Buscar empresa\n
+        5. Mostrar viajes de empresa\n
         6. Volver al menú principal\n";
         
         $opcion = trim(fgets(STDIN));
 
         switch ($opcion) {
             case '1': // VER EMPRESAS
-                listarEmpresa();
+                $arrEmpresas = Empresa::listar();
+                strArray($arrEmpresas);
                 break;
 
             case '2': // CARGAR EMPRESA
-                echo "Ingrese el nombre de la empresa: \n";
-                $nombreEmpresa = trim(fgets(STDIN));
-                echo "Ingrese la dirección de la empresa: \n";
-                $direccionEmpresa = trim(fgets(STDIN));
-
-                $objEmpresa = new Empresa();
-                $objEmpresa->cargarDatos($nombreEmpresa, $direccionEmpresa);
-                if ($objEmpresa->insertar()) {
-                    echo "La empresa se cargó con éxito!\n";
-                    
-                }else {
-                    echo "No pudo cargarse la empresa\n";
-                }
+                cargarEmpresa();
                 break;
 
             case '3': // MODIFICAR EMPRESA
                 echo "Seleccione la empresa que quiere modificar: \n";
-                listarEmpresa();
+                
+                $arrEmpresas = Empresa::listar();
+                strArray($arrEmpresas);
                 $idempresa = trim(fgets(STDIN));
-                $objEmpresa = new Empresa();
-                if ($objEmpresa->buscar($idempresa)) {
-                    echo $objEmpresa->__toString();
-                    echo "Ingrese el nombre: \n";
-                    $enombre = trim(fgets(STDIN));
-                    echo "Ingrese la dirección\n";
-                    $edireccion = trim(fgets(STDIN));
-                    $objEmpresa->setEnombre($enombre);
-                    $objEmpresa->setEdireccion($edireccion);
-
-                    if ($objEmpresa->modificar()) {
-                        echo "La empresa se modificó con exito!\n";
-                    }else {
-                        echo "No se pudo modificar la empresa\n";
-                    }
-                }
+                modificarEmpresa($idempresa);
                 break;
                 
             case '4': //ELIMINAR EMPRESA
                 echo "Seleccione la empresa que quiere eliminar: \n";
-                listarEmpresa();
+                
+                $arrEmpresas = Empresa::listar();
                 $idempresa = trim(fgets(STDIN));
                 $objEmpresa = new Empresa();
                 if ($objEmpresa->buscar($idempresa)) {
+                    $viaje = new Viaje();
+                    $condicion = 'idempresa = ' . $idempresa;
+                    $viajesEmpresa = $viaje->listar($condicion);
+                    if (!empty($viajesEmpresa)) {
+                        echo "La empresa tiene viajes y pasajeros, desea borrar todo?\n"; // si o no
+                        $opcion = trim(fgets(STDIN));
+                        if ($opcion == 'si') {
+                            
+                        }
+                    }
                     if ($objEmpresa->eliminar()) {
                         echo "La empresa fue eliminada\n";
                     }else {
@@ -121,8 +108,8 @@ function menuEmpresas(){
 
                 break;
 
-            case '5': // BUSCAR EMPRESA
-            
+            case '5': // MOSTRAR VIAJES DE EMPRESA
+                
                 break;
                 
             case '6': // SALIR
@@ -137,93 +124,87 @@ function menuEmpresas(){
 }
 
 
-/// METODOS PARA LISTAR
-
-function listarEmpresa(){
-    $objEmpresa = new Empresa;
-    $allEmpresas = $objEmpresa->listar('');
-    $strEmpresas = '';
-
-    for ($i=0; $i < count($allEmpresas); $i++) { 
-        $strEmpresas .= ($i+1) . ". " . $allEmpresas[$i] . "\n--------------------\n";
-    }
-    echo $strEmpresas;
-}
-
-function listarViajes(){
-    $objViaje = new Viaje;
-    $allViajes = $objViaje->listar('');
-    $strViajes = '';
-
-    for ($i=0; $i < count($allViajes); $i++) { 
-        $strViajes .= ($i+1) . ". " . $allViajes[$i] . "\n--------------------\n";
-    }
-    echo $strViajes;
-}
-
-function listarResponsables(){
-    $objResponsable = new ResponsableV;
-    $allResponsables = $objResponsable->listar('');
-    $strResponsables = '';
-
-    for ($i=0; $i < count($allResponsables); $i++) { 
-        $strResponsables .= ($i+1) . ". " . $allResponsables[$i] . "\n--------------------\n";
-    }
-    echo $strResponsables;
-}
-
-function modificarEmpresa(){
+function modificarEmpresa($idempresa){
     $objEmpresa = new Empresa();
-    $empresas = $objEmpresa->listar('');
-    $resp = false;
-    do {
-        echo "Seleccione la empresa que quiere modificar: \n";
-        listarEmpresa();
-        $opcion = trim(fgets(STDIN));
-        if (is_numeric($opcion)) {
-            
-            if ($opcion > 0 && $opcion <= count($empresas)) {
-                $resp = true;
-                $empresaElegida = $empresas[$opcion - 1];
-            } else {
-                echo "Ingrese una opcion válida!";
-            }
+    if ($objEmpresa->buscar($idempresa)) {
+        echo $objEmpresa->__toString();
+        echo "Ingrese el nombre: \n";
+        $enombre = trim(fgets(STDIN));
+        echo "Ingrese la dirección\n";
+        $edireccion = trim(fgets(STDIN));
+        $objEmpresa->setEnombre($enombre);
+        $objEmpresa->setEdireccion($edireccion);
+
+        if ($objEmpresa->modificar()) {
+            echo "La empresa se modificó con exito!\n";
         }else {
-            echo "Ingrese una opcion válida!";
+            echo "No se pudo modificar la empresa\n";
         }
-    } while ($resp == false);
+    } else {
+        echo "Ingrese un ID de empresa válido\n";
+    }
+}
+
+function cargarEmpresa(){
+    $objEmpresa = new Empresa();
+    echo "Ingrese el nombre de la empresa: \n";
+    $nombreEmpresa = trim(fgets(STDIN));
+    echo "Ingrese la dirección de la empresa: \n";
+    $direccionEmpresa = trim(fgets(STDIN));
+    $objEmpresa->cargarDatos($nombreEmpresa, $direccionEmpresa);
+
+    if ($objEmpresa->insertar()) {
+        echo "La empresa se cargó con éxito!\n";
+        
+    }else {
+        echo "No pudo cargarse la empresa\n";
+        echo $objEmpresa->getMensajeoperacion();
+    }
+    return $objEmpresa;
+}
+
+function eliminarViajesEmpresa($idEmpresa)
+{
+    $viaje = new Viaje();
+    $condicion = 'idempresa = ' . $idEmpresa->getIdempresa();
+    $viajes = Viaje::listar($condicion);
+    foreach ($viajes as $viaje) {
+        eliminarPasajeros($viaje);
+        
+    }
+}
+
+function eliminarPasajeros($viaje){
+    $pasajero = new Pasajero();
+    $condicion = 'idviaje = ' . $viaje->getidviaje;
+    $pasajeros = $pasajero ->listar($condicion);
+
+    foreach ($pasajeros as $pasajero_i) {
+        if ($pasajero_i->Eliminar()) {
+            echo "Pasajero eliminado!\n";
+        }else {
+            echo "No se pudo eliminar al pasajero\n";
+        }
+    }
+}
+
+function eliminarPasajero(){
 
 }
+
+
+/**
+ * Convierte un array pasado por parametro en string
+ * para ser presentado de una forma más clara.
+ */
+function strArray($array)
+{
+    $str = "\n-------------------\n";
+    foreach ($array as $item) {
+        $str = $str . $item->__toString() . "\n";
+    }
+    echo $str;
+}
+
 
 ?>
-
-
-<!-- switch ($opcion) {
-            case '1':
-                
-                break;
-
-            case '2':
-            
-                break;
-
-            case '3':
-            
-                break;
-                
-            case '4':
-            
-                break;
-
-            case '5':
-            
-                break;
-                
-            case '6':
-                $noSalir = false;
-                break;
-            
-            default:
-                
-                break;
-        } -->

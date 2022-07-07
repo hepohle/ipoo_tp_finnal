@@ -91,8 +91,8 @@ class Viaje
     }
 
 
-    public function cargarDatos($idviaje, $vdestino, $vcantmaxpasajeros, $idempresa, $objresponsable, $vimporte, $tipoasiento, $idayvuelta){
-        $this->setidviaje($idviaje);
+    public function cargarDatos($vdestino, $vcantmaxpasajeros, $idempresa, $objresponsable, $vimporte, $tipoasiento, $idayvuelta){
+        //$this->setidviaje($idviaje);
         $this->setvdestino($vdestino);
         $this->setvcantmaxpasajeros($vcantmaxpasajeros);
         $this->setidempresa($idempresa);
@@ -215,7 +215,7 @@ class Viaje
         return $resp;
     }
 
-    public function listar($condicion = ''){
+    public static function listar($condicion = ''){
         $arregloViajes = null;
         $base = new BaseDatos();
         $consultaListar = "SELECT * FROM viaje ";
@@ -227,15 +227,37 @@ class Viaje
                 $arregloViajes = [];
                 while ($row2 = $base->Registro()) {
                     $idViaje = $row2['idviaje'];
-                    $objViaje = new Viaje();
-                    $objViaje->buscar($idViaje);
-                    array_push($arregloViajes, $objViaje);
+                    $vdestino = $row2['vdestino'];
+                    $cantMaxPasajeros = $row2['vcantmaxpasajeros'];
+
+                    $objEmpresa = new Empresa();
+                    $idempresa = $row2['idempresa'];
+                    if ($objEmpresa->buscar($idempresa)) {
+                        
+                    }else {
+                        $objEmpresa = null;
+                    }
+
+                    $objResponsable = new ResponsableV();
+                    $numEmpleado = $row2['rnumeroempleado'];
+                    if ($objResponsable->buscar($numEmpleado)) {
+                        
+                    }else {
+                        $objResponsable = null;
+                    }
+                    $vimporte = $row2['vimporte'];
+                    $tipoAsiento = $row2['tipoAsiento'];
+                    $idayvuelta = $row2['idayvuelta'];
+
+                    $viaje = new Viaje();
+                    $viaje->cargarDatos($vdestino,$cantMaxPasajeros,$objEmpresa,$objResponsable,$vimporte,$tipoAsiento,$idayvuelta);
+                    array_push($arregloViajes, $viaje);
                 }
             }else {
-                $this->setmensajeoperacion($base->getError());
+                Viaje::setmensajeoperacion($base->getError());
             }
         }else {
-            $this->setmensajeoperacion($base->getError());
+            Viaje::setmensajeoperacion($base->getError());
         }
         return $arregloViajes;
     }

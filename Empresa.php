@@ -7,6 +7,7 @@ class Empresa
     private $enombre;
     private $edireccion;
     private $mensajeoperacion;
+    static $mensajeFallo = '';
 
     public function __construct()
     {
@@ -37,12 +38,19 @@ class Empresa
     public function getMensajeoperacion(){
         return $this->mensajeoperacion;
     }
-    public static function setMensajeoperacion($mensajeoperacion){
-        Empresa::$mensajeoperacion = $mensajeoperacion;
+    public function setMensajeoperacion($mensajeoperacion){
+        $this->mensajeoperacion = $mensajeoperacion;
     }
 
-    public function cargarDatos($idempresa, $enombre,$edireccion){
-        $this->idempresa = $idempresa;
+    public static function getMensajeFallo(){
+        return Empresa::$mensajeFallo;
+    }
+    public static function setMensajeFallo($mensajeFallo){
+        Empresa::$mensajeFallo = $mensajeFallo;
+    }
+
+    public function cargarDatos($enombre,$edireccion){
+        //$this->idempresa = $idempresa;
         $this->enombre = $enombre;
         $this->edireccion = $edireccion;
     }
@@ -107,7 +115,7 @@ class Empresa
 
     public function buscar($idempresa){
         $base = new BaseDatos();
-        $consultaBusca = "SELECT * FROM empresa WHERE 'idempresa' = $idempresa";
+        $consultaBusca = "SELECT * FROM empresa WHERE idempresa = $idempresa";
         $resp= false;
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaBusca)) {

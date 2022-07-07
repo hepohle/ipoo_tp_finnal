@@ -159,7 +159,6 @@ class Pasajero
 
                     $objViaje = new Viaje();
                     $objViaje->buscar($row2['idviaje']);
-                    $this->setobjviaje($objViaje);
                     
                     $objPasajero = new Pasajero;
                     $objPasajero->cargarDatos($rdocumento,$pnombre,$papellido,$ptelefono,$objViaje); 
