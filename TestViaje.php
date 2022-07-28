@@ -9,6 +9,11 @@ include_once 'Empresa.php';
 // MENU PRINCIPAL 
 
 function menuPrincipal(){
+echo"     ___                  _   ___        _     __\n";
+echo"    / _ )__ _____ ___    | | / (_)__ _  (_)__ / /\n";
+echo"   / _  / // / -_) _ \   | |/ / / _ `/ / / -_)_/ \n";
+echo"  /____/\_,_/\__/_//_/   |___/_/\_,_/_/ /\__(_)  \n";
+echo"                                   |___/         \n";
     echo "\n-----  MENU PRINCIPAL  -----\n
     1. EMPRESAS\n
     2. VIAJES\n
@@ -65,7 +70,8 @@ function menuEmpresas(){
 
         switch ($opcion) {
             case '1': // VER EMPRESAS
-                $arrEmpresas = Empresa::listar();
+                $objEmpresa = new Empresa();
+                $arrEmpresas = $objEmpresa->listar();
                 strArray($arrEmpresas);
                 break;
 
@@ -75,8 +81,8 @@ function menuEmpresas(){
 
             case '3': // MODIFICAR EMPRESA
                 echo "Seleccione la empresa que quiere modificar: \n";
-                
-                $arrEmpresas = Empresa::listar();
+                $objEmpresa = new Empresa();
+                $arrEmpresas = $objEmpresa->listar();
                 strArray($arrEmpresas);
                 $idempresa = trim(fgets(STDIN));
                 modificarEmpresa($idempresa);
@@ -84,10 +90,11 @@ function menuEmpresas(){
                 
             case '4': //ELIMINAR EMPRESA
                 echo "Seleccione la empresa que quiere eliminar: \n";
-                
-                $arrEmpresas = Empresa::listar();
-                $idempresa = trim(fgets(STDIN));
                 $objEmpresa = new Empresa();
+                $arrEmpresas = $objEmpresa->listar();
+                strArray($arrEmpresas);
+                $idempresa = trim(fgets(STDIN));
+                
                 if ($objEmpresa->buscar($idempresa)) {
                     $viaje = new Viaje();
                     $condicion = 'idempresa = ' . $idempresa;

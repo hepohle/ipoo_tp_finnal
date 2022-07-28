@@ -57,9 +57,13 @@ class Empresa
 
     public function __toString()
     {
+        $idE = $this->getIdempresa();
+        $nombreE = $this->getEnombre();
+        $direE = $this->getEdireccion();
         $str = "--- EMPRESA ---\n";
-        $str .= "ID: " . $this->getIdempresa() . "\n";
-        $str .= "Nombre: " . $this->getEnombre() . "\n";
+        $str .= "ID: " . $idE . "\n";
+        $str .= "Nombre: " . $nombreE . "\n";
+        $str .= "Direccion: " . $direE . "\n";
         return $str;
     }
 
@@ -134,7 +138,7 @@ class Empresa
         return $resp;
     }
 
-    public static function listar($condicion = ''){
+    public function listar($condicion = ''){
         $arregloEmpresa = null;
         $base = new BaseDatos();
         $consultaListar = "SELECT * FROM empresa";
@@ -148,18 +152,19 @@ class Empresa
                 $arregloEmpresa = array();
 
                 while ($row2 = $base->Registro()) {
-                    $idempresa = $row2['idempresa'];
-                    $enombre = $row2['enombre'];
-                    $edireccion = $row2['edireccion'];
+                    // $idempresa = $row2['idempresa'];
+                    // $enombre = $row2['enombre'];
+                    // $edireccion = $row2['edireccion'];
                     $objEmpresa = new Empresa();
-                    $objEmpresa->cargarDatos($idempresa,$enombre,$edireccion);
-                    array_push($arregloEmpresa, $objEmpresa);
+                    $objEmpresa->buscar($row2['idempresa']);
+                    //$objEmpresa->cargarDatos($idempresa,$enombre,$edireccion);
+                    $arregloEmpresa[] = $objEmpresa;
                 }
             }else {
-                Empresa::setMensajeoperacion($base->getError());
+                $this->setMensajeoperacion($base->getError());
             }
         }else {
-            Empresa::setMensajeoperacion($base->getError());
+            $this->setMensajeoperacion($base->getError());
         }
         return $arregloEmpresa;
     }
