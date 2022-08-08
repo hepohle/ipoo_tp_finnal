@@ -77,7 +77,7 @@ class Pasajero
 
     public function __toString()
     {
-        $str = "--- PASAJERO ---\n";
+        $str = "\n--- PASAJERO ---\n";
         $str .= "Documento: " . $this->getrdocumento() . "\n";
         $str .= "Nombre: " . $this->getpnombre() . "\n";
         $str .= "Apellido: " . $this->getpapellido() . "\n";

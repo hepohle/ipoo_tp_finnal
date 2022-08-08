@@ -104,14 +104,15 @@ class Viaje
 
     public function __toString()
     {
+        $id_viaje = $this->getidviaje();
         $empresa = $this->getidempresa();
         $empresaStr = $empresa->__toString();
         $responsable = $this->getobjresponsable();
         $responsableStr = $responsable->__toString();
 
-
-        $str = "--- VIAJE ---\n";
-        $str .= "ID: " . $this->getidviaje() . "\n";
+        echo "***" . $id_viaje;
+        $str = "\n--- VIAJE ---\n";
+        $str .= "ID: " . $id_viaje . "\n";
         $str .= "Destino: " . $this->getvdestino() . "\n";
         $str .= "Cant max Asientos: " . $this->getvcantmaxpasajeros() . "\n";
         $str .= "Empresa: " . $empresaStr . "\n";
@@ -222,36 +223,43 @@ class Viaje
         if ($condicion != '') {
             $consultaListar .= " WHERE " . $condicion;
         }
+
+        $condicion .= " ORDER BY idempresa ";
+
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaListar)) {
-                $arregloViajes = [];
+                $arregloViajes = array();
+
                 while ($row2 = $base->Registro()) {
-                    $idViaje = $row2['idviaje'];
-                    $vdestino = $row2['vdestino'];
-                    $cantMaxPasajeros = $row2['vcantmaxpasajeros'];
+                    // $idViaje = $row2['idviaje'];
+                    // $vdestino = $row2['vdestino'];
+                    // $cantMaxPasajeros = $row2['vcantmaxpasajeros'];
+                    $objViaje = new Viaje();
+                    $objViaje->buscar($row2['idviaje']);
 
-                    $objEmpresa = new Empresa();
-                    $idempresa = $row2['idempresa'];
-                    if ($objEmpresa->buscar($idempresa)) {
+                    $arregloViajes[] = $objViaje;
+                    // $objEmpresa = new Empresa();
+                    // $idempresa = $row2['idempresa'];
+                    // if ($objEmpresa->buscar($idempresa)) {
                         
-                    }else {
-                        $objEmpresa = null;
-                    }
+                    // }else {
+                    //     $objEmpresa = null;
+                    // }
 
-                    $objResponsable = new ResponsableV();
-                    $numEmpleado = $row2['rnumeroempleado'];
-                    if ($objResponsable->buscar($numEmpleado)) {
+                    // $objResponsable = new ResponsableV();
+                    // $numEmpleado = $row2['rnumeroempleado'];
+                    // if ($objResponsable->buscar($numEmpleado)) {
                         
-                    }else {
-                        $objResponsable = null;
-                    }
-                    $vimporte = $row2['vimporte'];
-                    $tipoAsiento = $row2['tipoAsiento'];
-                    $idayvuelta = $row2['idayvuelta'];
+                    // }else {
+                    //     $objResponsable = null;
+                    // }
+                    // $vimporte = $row2['vimporte'];
+                    // $tipoAsiento = $row2['tipoAsiento'];
+                    // $idayvuelta = $row2['idayvuelta'];
 
-                    $viaje = new Viaje();
-                    $viaje->cargarDatos($vdestino,$cantMaxPasajeros,$objEmpresa,$objResponsable,$vimporte,$tipoAsiento,$idayvuelta);
-                    array_push($arregloViajes, $viaje);
+                    // $viaje = new Viaje();
+                    // $viaje->cargarDatos($vdestino,$cantMaxPasajeros,$objEmpresa,$objResponsable,$vimporte,$tipoAsiento,$idayvuelta);
+                    // array_push($arregloViajes, $viaje);
                 }
             }else {
                 Viaje::setmensajeoperacion($base->getError());

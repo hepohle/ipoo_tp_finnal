@@ -60,7 +60,7 @@ class Empresa
         $idE = $this->getIdempresa();
         $nombreE = $this->getEnombre();
         $direE = $this->getEdireccion();
-        $str = "--- EMPRESA ---\n";
+        $str = "\n--- EMPRESA ---\n";
         $str .= "ID: " . $idE . "\n";
         $str .= "Nombre: " . $nombreE . "\n";
         $str .= "Direccion: " . $direE . "\n";

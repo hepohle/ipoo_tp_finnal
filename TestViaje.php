@@ -5,9 +5,9 @@ include_once 'Viaje.php';
 include_once 'ResponsableV.php';
 include_once 'Empresa.php';
 
-
-// MENU PRINCIPAL 
-
+/**
+ * \\\\ MENU PRINCIPAL /////
+ */
 function menuPrincipal(){
 echo"     ___                  _   ___        _     __\n";
 echo"    / _ )__ _____ ___    | | / (_)__ _  (_)__ / /\n";
@@ -33,7 +33,7 @@ while ($noSalir) {
             break;
     
         case '2': // VIAJES
-            # code...
+            menuViajes();
             break;
         
         case '3': // RESPONSABLES
@@ -54,6 +54,9 @@ while ($noSalir) {
     }
 }
 
+/**
+ * \\\\\ MENU DE OPCIONES DE EMPRESA. /////
+ */
 function menuEmpresas(){
     $noSalir = true;
 
@@ -100,10 +103,11 @@ function menuEmpresas(){
                     $condicion = 'idempresa = ' . $idempresa;
                     $viajesEmpresa = $viaje->listar($condicion);
                     if (!empty($viajesEmpresa)) {
-                        echo "La empresa tiene viajes y pasajeros, desea borrar todo?\n"; // si o no
+                        echo "La empresa tiene viajes y pasajeros, desea borrar todo? (si / no)\n"; // si o no
                         $opcion = trim(fgets(STDIN));
                         if ($opcion == 'si') {
-                            
+                            eliminarViajesEmpresa($objEmpresa);
+                            eliminarEmpresa($objEmpresa);
                         }
                     }
                     if ($objEmpresa->eliminar()) {
@@ -116,7 +120,13 @@ function menuEmpresas(){
                 break;
 
             case '5': // MOSTRAR VIAJES DE EMPRESA
-                
+                echo "Elija el ID de la empresa de la que desea ver sus viajes: \n";
+                $objEmpresa = new Empresa();
+                $arrEmpresas = $objEmpresa->listar();
+                strArray($arrEmpresas);
+                $idempresa = trim(fgets(STDIN));
+                $viajes = viajesEmpresa($idempresa);
+                strArray($viajes);
                 break;
                 
             case '6': // SALIR
@@ -130,7 +140,9 @@ function menuEmpresas(){
     }
 }
 
-
+/**
+ * Modifica una empresa.
+ */
 function modificarEmpresa($idempresa){
     $objEmpresa = new Empresa();
     if ($objEmpresa->buscar($idempresa)) {
@@ -152,6 +164,9 @@ function modificarEmpresa($idempresa){
     }
 }
 
+/**
+ * Carga una empresa a la base de datos 
+ */
 function cargarEmpresa(){
     $objEmpresa = new Empresa();
     echo "Ingrese el nombre de la empresa: \n";
@@ -170,6 +185,9 @@ function cargarEmpresa(){
     return $objEmpresa;
 }
 
+/**
+ * recibe el id de una empresa y elimina todos los viajes de la empresa.
+ */
 function eliminarViajesEmpresa($idEmpresa)
 {
     $viaje = new Viaje();
@@ -177,28 +195,116 @@ function eliminarViajesEmpresa($idEmpresa)
     $viajes = Viaje::listar($condicion);
     foreach ($viajes as $viaje) {
         eliminarPasajeros($viaje);
+        eliminarViaje($viaje);
         
     }
 }
 
+/**
+ * recibe un objeto viaje y elimina todos sus pasajeros.
+ */
 function eliminarPasajeros($viaje){
-    $pasajero = new Pasajero();
-    $condicion = 'idviaje = ' . $viaje->getidviaje;
-    $pasajeros = $pasajero ->listar($condicion);
-
-    foreach ($pasajeros as $pasajero_i) {
-        if ($pasajero_i->Eliminar()) {
-            echo "Pasajero eliminado!\n";
-        }else {
-            echo "No se pudo eliminar al pasajero\n";
-        }
+    $pasajeros = listadoPasajeros($viaje->getidviaje);
+    
+    foreach ($pasajeros as $pasajero) {
+        eliminarPasajero($pasajero);
     }
 }
 
-function eliminarPasajero(){
-
+/**
+ * recibe un id de un viaje y devuelve los pasajeros del viaje
+ */
+function listadoPasajeros($idviaje){
+    $pasajero = new Pasajero();
+    $condicion = 'idviaje = ' . $idviaje;
+    $pasajeros = $pasajero->listar($condicion);
+    return $pasajeros;
 }
 
+/**
+ * recibe el id de una empresa y devuelve un array con los viajes de la empresa
+ */
+function viajesEmpresa($id){
+    $viaje = new Viaje();
+    $condicion = 'idempresa = ' . $id;
+    $arrViajesEmpresa = $viaje->listar($condicion);
+    return $arrViajesEmpresa;
+}
+
+/**
+ * recibe un objeto empresa y lo elimina
+ */
+function eliminarEmpresa($objEmpresa){
+    if($objEmpresa->eliminar()) {
+        echo "La empresa se eliminó con éxito\n";
+    } else {
+        echo "La empresa no se pudo eliminar.\n";
+    }
+}
+
+/**
+ * recibe un objeto pasajero y lo elimina
+ */
+function eliminarPasajero($pasajero){
+    if ($pasajero->eliminar()) {
+        echo "Se elimino el pasajero\n";
+    } else {
+        echo "No se pudo eliminar el pasajero\n";
+    }
+}
+
+/**
+ * recibe un objeto viaje y lo elimina
+ */
+function eliminarViaje($objViaje){
+     if ($objViaje->eliminar()) {
+         echo "El viaje se elimino con éxito.\n";
+     } else {
+         echo "No se pudo eliminar el viaje\n";
+     }
+}
+
+/**
+ * \\\\\ MENU OPCIONES DE VIAJES ////
+ */
+function menuViajes(){
+    $noSalir = true;
+
+    while ($noSalir) {
+        echo "\n-----  VIAJES  -----\n
+        1. Ver viajes\n
+        2. Cargar un viaje\n
+        3. Modificar viaje\n
+        4. Eliminar viaje\n
+        5. Mostrar pasajeros del viaje\n
+        6. Volver al menú principal\n";
+
+        $opcion = trim(fgets(STDIN));
+
+        switch ($opcion) {
+            case '1': // VER VIAJES
+                $objViaje = new Viaje();
+                $arrViajes = $objViaje->listar();
+                strArray($arrViajes);
+                break;
+            case '2': // CARGAR VIAJE
+            
+                break;
+            case '3': // MODIFICAR VIAJE
+            
+                break;
+            case '4': // ELIMINAR VIAJE
+            
+                break;
+            case '5': // MOSTRAR PASAJEROS DEL VIAJE
+            
+                break;
+            case '6': // SALIR
+                $noSalir = false;
+                break;
+        }
+    }
+}
 
 /**
  * Convierte un array pasado por parametro en string
@@ -212,6 +318,5 @@ function strArray($array)
     }
     echo $str;
 }
-
 
 ?>
