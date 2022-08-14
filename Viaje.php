@@ -9,7 +9,7 @@ class Viaje
     private $vdestino;
     private $vcantmaxpasajeros;
     private $idempresa; // Es un objeto empresa
-    private $objresponsable; // Ed un objeto responsable
+    private $objresponsable; // Es un objeto responsable
     private $vimporte;
     private $tipoasiento;
     private $idayvuelta;
@@ -110,7 +110,6 @@ class Viaje
         $responsable = $this->getobjresponsable();
         $responsableStr = $responsable->__toString();
 
-        echo "***" . $id_viaje;
         $str = "\n--- VIAJE ---\n";
         $str .= "ID: " . $id_viaje . "\n";
         $str .= "Destino: " . $this->getvdestino() . "\n";
@@ -224,20 +223,23 @@ class Viaje
             $consultaListar .= " WHERE " . $condicion;
         }
 
-        $condicion .= " ORDER BY idempresa ";
+        //$consultaListar .= " ORDER BY idempresa ";
 
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaListar)) {
                 $arregloViajes = array();
 
                 while ($row2 = $base->Registro()) {
-                    // $idViaje = $row2['idviaje'];
-                    // $vdestino = $row2['vdestino'];
-                    // $cantMaxPasajeros = $row2['vcantmaxpasajeros'];
+                    
                     $objViaje = new Viaje();
                     $objViaje->buscar($row2['idviaje']);
 
                     $arregloViajes[] = $objViaje;
+
+                    // $idViaje = $row2['idviaje'];
+                    // $vdestino = $row2['vdestino'];
+                    // $cantMaxPasajeros = $row2['vcantmaxpasajeros'];
+                    
                     // $objEmpresa = new Empresa();
                     // $idempresa = $row2['idempresa'];
                     // if ($objEmpresa->buscar($idempresa)) {

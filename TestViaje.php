@@ -75,7 +75,12 @@ function menuEmpresas(){
             case '1': // VER EMPRESAS
                 $objEmpresa = new Empresa();
                 $arrEmpresas = $objEmpresa->listar();
-                strArray($arrEmpresas);
+                if (hayEmpresa()) {
+                    strArray($arrEmpresas);    
+                } else {
+                    echo "No hay empresas cargadas\n";
+                }
+                
                 break;
 
             case '2': // CARGAR EMPRESA
@@ -126,7 +131,12 @@ function menuEmpresas(){
                 strArray($arrEmpresas);
                 $idempresa = trim(fgets(STDIN));
                 $viajes = viajesEmpresa($idempresa);
-                strArray($viajes);
+                if (count($viajes) > 0) {
+                    strArray($viajes);    
+                } else {
+                    echo "La empresa no tiene viajes cargados.\n";
+                }
+                
                 break;
                 
             case '6': // SALIR
@@ -204,7 +214,7 @@ function eliminarViajesEmpresa($idEmpresa)
  * recibe un objeto viaje y elimina todos sus pasajeros.
  */
 function eliminarPasajeros($viaje){
-    $pasajeros = listadoPasajeros($viaje->getidviaje);
+    $pasajeros = listadoPasajeros($viaje->getidviaje());
     
     foreach ($pasajeros as $pasajero) {
         eliminarPasajero($pasajero);
@@ -284,14 +294,36 @@ function menuViajes(){
         switch ($opcion) {
             case '1': // VER VIAJES
                 $objViaje = new Viaje();
-                $arrViajes = $objViaje->listar();
-                strArray($arrViajes);
+                $arrViajes = $objViaje->listar();  
+                if (hayViaje()) {      
+                    strArray($arrViajes);
+                }else {
+                    echo "No hay viajes cargados\n";
+                }
+                
                 break;
             case '2': // CARGAR VIAJE
-            
+                if (hayEmpresa() && hayResponsable()) {
+                    cargarViaje();
+                }else {
+                    echo "No hay Empresas y/o Responsables cargados. No es posible cargar viajes.\n";
+                }
                 break;
             case '3': // MODIFICAR VIAJE
-            
+                if (hayViaje()) {
+                    $viaje = new Viaje();
+                    echo "Ingrese el ID del viaje que quiere modificar: \n";
+                    $id = trim(fgets(STDIN));
+
+                    if ($viaje->buscar($id)) {
+                        
+                    } else {
+                        echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
+                    }
+
+                }else {
+                    echo "No hay viajes cargados para modificar\n";
+                }
                 break;
             case '4': // ELIMINAR VIAJE
             
@@ -304,6 +336,120 @@ function menuViajes(){
                 break;
         }
     }
+}
+
+/**
+ * Retorna un boolean si hay o no empresas cargadas.
+ */
+function hayEmpresa(){
+    $objEmpresa = new Empresa();
+    $arrEmpresas = $objEmpresa->listar();
+    $hayEmpresaCargada = count($arrEmpresas) > 0;
+    return $hayEmpresaCargada;
+}
+
+/**
+ * Retorna un boolean si hay o no Responsables cargados.
+ */ 
+function hayResponsable(){
+    $objResponsable = new ResponsableV();
+    $arrResponsable = $objResponsable->listar();
+    $hayResponsableCargado = count($arrResponsable) > 0;
+    return $hayResponsableCargado;
+}
+
+/**
+ * Retorna un boolean si hay o no viajes
+ */
+function hayViaje(){
+    $objViaje = new Viaje();
+    $arrViajes = $objViaje->listar();
+    $hayViajeCargado = count($arrViajes) > 0;
+    return $hayViajeCargado;
+}
+
+/**
+ * Retorna un boolean si hay o no lugar en el viaje
+ */
+function hayLugar($idViaje){
+    $viaje = new Viaje();
+    $viaje->buscar($idViaje);
+    $lugares = $viaje->getvcantmaxpasajeros();
+    $pasajeros = listadoPasajeros($idViaje);
+    return $pasajeros < $lugares;
+}
+
+function cargarViaje(){
+    $viaje = new Viaje();
+    echo "Ingese los datos del viaje: \n";
+
+    do {//Comprueba que no haya viajes al mismo destino que se intenta cargar.
+        echo "Destino: \n";
+        $destino = trim(fgets(STDIN));
+        $hayViajesMismoDestino = viajeMismoDestino($destino);
+        if ($hayViajesMismoDestino) {
+            echo "Ya hay un viaje cargado a ese destino\n";
+        }
+    } while ($hayViajesMismoDestino);
+
+    echo "Cantidad máxima de pasajeros: \n";
+    $cantMaxPsajeros = trim(fgets(STDIN));
+
+    do {// Comprueba que el ID corresponda a una empresa cargada.
+        echo "ID de la Empresa: \n";
+        $idEmpresa = trim(fgets(STDIN));
+        $empresa = new Empresa();
+        $hayEmpresa = $empresa->buscar($idEmpresa);
+        if (!$hayEmpresa) {
+            echo "El ID ingresado no corresponde a ninguna empresa cargada.\n";
+        }
+    } while (!$hayEmpresa);
+
+    do {// Comprueba que el número ingresado corresponda a un empleado cargado.
+        echo "Número de empleado responsable: \n";
+        $nroResponsable = trim(fgets(STDIN));
+        $responsable = new ResponsableV();
+        $hayResponsable = $responsable->buscar($nroResponsable);
+
+        if (!$hayResponsable) {
+            echo "El número ingresado no coresponde a ningún empleado cargado \n";
+        }
+    } while (!$hayResponsable);
+
+    echo "Importe: \n";
+    $importe = trim(fgets(STDIN));
+
+    echo "Tipo de asiento: (cama / samicama)\n";
+    $tipoAsiento = trim(fgets(STDIN));
+
+    echo "Ida y vuelta: (si / no)\n";
+    $idaVuelta = trim(fgets(STDIN));
+
+    $viaje->cargarDatos($destino, $cantMaxPsajeros, $empresa, $responsable, $importe, $tipoAsiento, $idaVuelta);
+
+    if ($viaje->insertar()) {
+        echo "El viaje fue cargado\n";
+    } else {
+        echo $viaje->getmensajeoperacion();
+    }
+    return $viaje;
+}
+
+function modificarViaje(){
+    echo "Ingrese el destino: \n";
+}
+
+function viajeMismoDestino($destinoViaje){
+    $resp = false;
+    $viaje = new Viaje();
+    $condicion = " vdestino = '{$destinoViaje}' ";
+    $arrMismoDestino = $viaje->listar($condicion);
+    if (count($arrMismoDestino) > 0) {
+        $resp = true;
+    }else {
+        $resp;
+    }
+    return $resp;
 }
 
 /**
