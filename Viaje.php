@@ -129,7 +129,7 @@ class Viaje
         $idEmpresa = $objEmpresa->getIdempresa();
         $objResponsable = $this->getobjresponsable();
         $numResponsable = $objResponsable->getrnumeroempleado();
-        $consultaInsertar = "INSERT INTO viaje VALUES({$this->getvdestino()}', {$this->getvcantmaxpasajeros()}, $idEmpresa, $numResponsable, {$this->getvimporte()}, '{$this->gettipoasiento()}', '{$this->getidayvuelta()}')";
+        $consultaInsertar = "INSERT INTO viaje(vdestino, vcantmaxpasajeros, idempresa, rnumeroempleado, vimporte, tipoAsiento, idayvuelta) VALUES('{$this->getvdestino()}', {$this->getvcantmaxpasajeros()}, {$idEmpresa}, {$numResponsable}, {$this->getvimporte()}, '{$this->gettipoasiento()}', '{$this->getidayvuelta()}')";
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaInsertar)) {
                 $resp = true;

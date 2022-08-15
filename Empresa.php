@@ -1,13 +1,10 @@
 <?php
-
-require_once('BaseDatos.php');
 class Empresa
 {
     private $idempresa;
     private $enombre;
     private $edireccion;
     private $mensajeoperacion;
-    static $mensajeFallo = '';
 
     public function __construct()
     {
@@ -42,17 +39,10 @@ class Empresa
         $this->mensajeoperacion = $mensajeoperacion;
     }
 
-    public static function getMensajeFallo(){
-        return Empresa::$mensajeFallo;
-    }
-    public static function setMensajeFallo($mensajeFallo){
-        Empresa::$mensajeFallo = $mensajeFallo;
-    }
-
     public function cargarDatos($enombre,$edireccion){
         //$this->idempresa = $idempresa;
-        $this->enombre = $enombre;
-        $this->edireccion = $edireccion;
+        $this->setEnombre($enombre);
+        $this->setEdireccion($edireccion);
     }
 
     public function __toString()
@@ -119,7 +109,7 @@ class Empresa
 
     public function buscar($idempresa){
         $base = new BaseDatos();
-        $consultaBusca = "SELECT * FROM empresa WHERE idempresa = $idempresa";
+        $consultaBusca = "SELECT * FROM empresa WHERE idempresa = " . $idempresa;
         $resp= false;
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaBusca)) {
@@ -128,12 +118,12 @@ class Empresa
                     $this->setEnombre($row2['enombre']);
                     $this->setEdireccion($row2['edireccion']);
                     $resp = true;
-                }else {
-                    $this->setMensajeoperacion($base->getError());
                 }
             }else {
                 $this->setMensajeoperacion($base->getError());
             }
+        }else {
+            $this->setMensajeoperacion($base->getError());
         }
         return $resp;
     }
@@ -161,10 +151,10 @@ class Empresa
                     $arregloEmpresa[] = $objEmpresa;
                 }
             }else {
-                $this->setMensajeoperacion($base->getError());
+                Empresa::setMensajeoperacion($base->getError());
             }
         }else {
-            $this->setMensajeoperacion($base->getError());
+            Empresa::setMensajeoperacion($base->getError());
         }
         return $arregloEmpresa;
     }

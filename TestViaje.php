@@ -205,8 +205,7 @@ function eliminarViajesEmpresa($idEmpresa)
     $viajes = Viaje::listar($condicion);
     foreach ($viajes as $viaje) {
         eliminarPasajeros($viaje);
-        eliminarViaje($viaje);
-        
+        eliminarViaje($viaje);  
     }
 }
 
@@ -312,11 +311,14 @@ function menuViajes(){
             case '3': // MODIFICAR VIAJE
                 if (hayViaje()) {
                     $viaje = new Viaje();
+                    $arrViajes = $viaje->listar("");
+                    strArray($arrViajes);
+
                     echo "Ingrese el ID del viaje que quiere modificar: \n";
                     $id = trim(fgets(STDIN));
 
                     if ($viaje->buscar($id)) {
-                        
+                        modificarViaje($viaje);
                     } else {
                         echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
                     }
@@ -326,10 +328,49 @@ function menuViajes(){
                 }
                 break;
             case '4': // ELIMINAR VIAJE
-            
+                $viaje = new Viaje();
+                $arrViajes = $viaje->listar("");
+                strArray($arrViajes);
+                echo "Ingrese el ID del viaje para borrarlo:\n";
+                $idViaje = trim(fgets(STDIN));
+                if($viaje->buscar($idViaje)){
+                    if (count(listadoPasajeros($idViaje)) > 0) {
+                        echo "El viaje tiene pasajeros, quiere borrarlos? (si / no)\n";
+                        $resp = strtoupper(trim(fgets(STDIN)));
+                        if ($resp == "SI") {
+                            eliminarPasajeros($viaje);
+                            eliminarViaje($viaje);
+                        }
+                    }else {
+                        eliminarViaje($viaje);
+                    }
+                } else {
+                    echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
+                }
                 break;
             case '5': // MOSTRAR PASAJEROS DEL VIAJE
-            
+                if (hayViaje()) {
+                    $viaje = new Viaje();
+                    $arrViajes = $viaje->listar("");
+                    strArray($arrViajes);
+
+                    echo "Ingrese el ID del viaje para ver sus pasajeros: \n";
+                    $idViaje = trim(fgets(STDIN));
+
+                    if ($viaje->buscar($idViaje)) {
+                        $pasajeros = listadoPasajeros($idViaje);
+                        if (count($pasajeros) > 0) {
+                            strArray($pasajeros);
+                        } else {
+                            echo "El viaje no tiene pasajeros\n";
+                        }
+                    } else {
+                        echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
+                    }
+
+                }else {
+                    echo "No hay viajes cargados.\n";
+                }
                 break;
             case '6': // SALIR
                 $noSalir = false;
@@ -381,7 +422,7 @@ function hayLugar($idViaje){
 
 function cargarViaje(){
     $viaje = new Viaje();
-    echo "Ingese los datos del viaje: \n";
+    echo "Ingrese los datos del viaje: \n";
 
     do {//Comprueba que no haya viajes al mismo destino que se intenta cargar.
         echo "Destino: \n";
@@ -435,8 +476,29 @@ function cargarViaje(){
     return $viaje;
 }
 
-function modificarViaje(){
+function modificarViaje($viaje){
     echo "Ingrese el destino: \n";
+    $destino = trim(fgets(STDIN));
+    if (viajeMismoDestino($destino)) {
+        echo "Ya existe un viaje a ese destino!\n";
+    }else {
+        echo "Ingrese la cantidad máxima de pasajeros:\n";
+        $cantMaxPsajeros = trim(fgets(STDIN));
+        echo "Ingrese el importe:\n";
+        $importe = trim(fgets(STDIN));
+        echo "Ingrese el tipo de asiento: (cama / semicama):\n";
+        $tipoAsiento = trim(fgets(STDIN));
+        $viaje->setvdestino($destino);
+        $viaje->setvcantmaxpasajeros($cantMaxPsajeros);
+        $viaje->setvimporte($importe);
+        $viaje->settipoasiento($tipoAsiento);
+
+        if ($viaje->modificarViaje()) {
+            echo "El viaje se modificó con éxito!\n";
+        }else {
+            echo "No se pudo modificar el viaje\n";
+        }
+    }
 }
 
 function viajeMismoDestino($destinoViaje){
