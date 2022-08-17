@@ -16,8 +16,8 @@ class ResponsableV
         $this->rapellido = '';
     }
 
-    public function cargarDatos($rnumeroempleado, $rnumerolicencia, $rnombre, $rapellido){
-        $this->rnumeroempleado = $rnumeroempleado;
+    public function cargarDatos($rnumerolicencia, $rnombre, $rapellido){
+        //$this->rnumeroempleado = $rnumeroempleado;
         $this->rnumerolicencia = $rnumerolicencia;
         $this->rnombre = $rnombre;
         $this->rapellido = $rapellido;

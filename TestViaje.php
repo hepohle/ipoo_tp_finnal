@@ -696,17 +696,73 @@ function menuResponsable(){
 
         switch ($opcion) {
             case '1': // VER RESPONSABLES
-                # code...
+                $responsable = new ResponsableV();
+                $responsables = $responsable->listar("");
+                if (count($responsables) > 0 ) {
+                    strArray($responsables);
+                } else {
+                    echo "No hay responsables cargados\n";
+                }
                 break;
             
             case '2': //CARGAR RESPONSABLE
-                # code...
+                insertarResponsable();
                 break;
             case '3': // MODIFICAR RESPONSABLE
-                # code...
+                $responsable = new ResponsableV();
+                if (hayResponsable()) {
+                    echo "Ingrese el nº de empleado del responsable a modificar:\n";
+                    $numEmpleado = trim(fgets(STDIN));
+
+                    if ($responsable->buscar($numEmpleado)) {
+                        echo "Ingrese nº de Licencia: \n";
+                        $numLicencia = trim(fgets(STDIN));
+                        echo "Nombre: \n";
+                        $nombre = trim(fgets(STDIN));
+                        echo "Apellido: \n";
+                        $apellido = trim(fgets(STDIN));
+
+                        $responsable->setrnumerolicencia($numLicencia);
+                        $responsable->setrnombre($nombre);
+                        $responsable->setrapellido($apellido);
+
+                        if ($responsable->modificar()) {
+                            echo "El responsable fue modificado con éxito.\n";
+                        } else {
+                            echo "No se pudo modificar el responsable\n";
+                        }
+
+                    } else {
+                        echo "El nº de empleado ingresado no corresponde a ningún responsable cargado.\n";
+                    }
+                } else {
+                    echo "No hay responsables cargados.\n";
+                }
                 break;
             case '4': //ELIMINAR RESPONSABLE
-                # code...
+                $responsable = new ResponsableV();
+                if (hayresponsable()) {
+                    echo "Ingrese el nº de empleado del responsable a eliminar.\n";
+                    $numEmpleado = trim(fgets(STDIN));
+
+                    if ($responsable->buscar($numEmpleado)) {
+                        $viaje = new Viaje();
+                        $condicion = 'rnumeroempleado = ' . $numEmpleado;
+                        $viajesConResponsable = $viaje->listar($condicion);
+
+                        if (count($viajesConResponsable) == 0) {
+                            if ($responsable->eliminar()) {
+                                echo "Se eliminó con éxito.\n";
+                            } else {
+                                echo "No se pudo eliminar el responsable\n";
+                            }
+                        }else {
+                            echo "No se puede eliminar tiene viajes a cargo.\n";
+                        }
+                    } else {
+                        echo "El nº ingresado no corresponde a ningún responsable cargado.\n";
+                    }
+                }
                 break;
             case '5': // SALIR
                 $noSalir = false;
@@ -718,6 +774,25 @@ function menuResponsable(){
         }
     }
 }
+
+function insertarResponsable(){
+    $responsable = new ResponsableV();
+    echo "Ingrese nº de Licencia: \n";
+    $numLicencia = trim(fgets(STDIN));
+    echo "Nombre: \n";
+    $nombre = trim(fgets(STDIN));
+    echo "Apellido: \n";
+    $apellido = trim(fgets(STDIN));
+
+    $responsable->cargarDatos($numLicencia, $nombre, $apellido);
+
+    if ($responsable->insertar()) {
+        echo "Responsable insertado con exito!\n";
+    } else {
+        echo "No se pudo insertar el responsable.\n";
+    }
+}
+
 
 /**
  * Convierte un array pasado por parametro en string
