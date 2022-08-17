@@ -106,11 +106,11 @@ class Pasajero
     {
         $base = new BaseDatos();
         $resp = false;
-        $consultaModifica = "UPDATE pasajero SET rdocumento = '" . $this->getrdocumento() . "', 
-            pnombre = '" . $this->getpnombre() . "',
-            papellido = '" . $this->getpapellido() . "',
-            ptelefono = '" . $this->getptelefono() . "',
-            idviaje = " . $this->getobjviaje()->getidviaje() ." WHERE pdocumento = " . $this->getrdocumento();
+        $consultaModifica = "UPDATE pasajero SET  
+            pnombre = '{$this->getpnombre()}',
+            papellido = '{$this->getpapellido()}',
+            ptelefono = '{$this->getptelefono()}',
+            idviaje = '{$this->getobjviaje()->getidviaje()}' WHERE rdocumento = '{$this->getrdocumento()}'";
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaModifica)) {
                 $resp = true;
@@ -127,7 +127,7 @@ class Pasajero
         $base = new BaseDatos();
         $resp = false;
         if ($base->Iniciar()) {
-            $consultaBorra = "DELETE FROM pasajero WHERE rdocumento=" . $this->getrdocumento();
+            $consultaBorra = "DELETE FROM pasajero WHERE rdocumento= " . $this->getrdocumento();
             if($base->Ejecutar($consultaBorra)){
                 $resp = true;
             } else {
@@ -152,18 +152,17 @@ class Pasajero
             if ($base->Ejecutar($consultaPasajero)) {
                 $arregloPasajero = array();
                 while ($row2 = $base->Registro()) {
-                    $rdocumento = $row2['rdocumento'];
-                    $pnombre = $row2['pnombre'];
-                    $papellido = $row2['papellido'];
-                    $ptelefono = $row2['ptelefono'];
+                    // $rdocumento = $row2['rdocumento'];
+                    // $pnombre = $row2['pnombre'];
+                    // $papellido = $row2['papellido'];
+                    // $ptelefono = $row2['ptelefono'];
 
-                    $objViaje = new Viaje();
-                    $objViaje->buscar($row2['idviaje']);
+                    // $objViaje = new Viaje();
+                    // $objViaje->buscar($row2['idviaje']);
                     
                     $objPasajero = new Pasajero;
-                    $objPasajero->cargarDatos($rdocumento,$pnombre,$papellido,$ptelefono,$objViaje); 
-                    
-                    array_push($arregloPasajero, $objPasajero);
+                    $objPasajero->buscar($row2['rdocumento']);
+                    $arregloPasajero[] = $objPasajero;
                 }
             } else {
                 $this->setmensajeoperacion($base->getError());
@@ -177,7 +176,7 @@ class Pasajero
     public function buscar($rdocumento){
         $base = new BaseDatos();
         $resp= false;
-        $consultaBuscar = "SELECT * FROM pasajero WHERE 'rdocumento' = " . $rdocumento;
+        $consultaBuscar = "SELECT * FROM pasajero WHERE rdocumento = " . $rdocumento;
         if ($base->Iniciar()) {
             if ($base->Ejecutar($consultaBuscar)) {
                 if ($row2 = $base->Registro()) {

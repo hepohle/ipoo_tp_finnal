@@ -193,17 +193,13 @@ class Viaje
                     $this->setidayvuelta($row2['idayvuelta']);
                     
                     $objEmpresa = new Empresa();
-                    if ($objEmpresa->buscar($row2['idempresa'])) {
-                        $this->setidempresa($objEmpresa);
-                    }else {
-                        $this->setidempresa('');
-                    }
+                    $objEmpresa->buscar($row2['idempresa']);
+                    $this->setidempresa($objEmpresa);
+                                            
                     $objResponsable = new ResponsableV();
-                    if ($objResponsable->buscar($row2['rnumeroempleado'])) {
-                        $this->setobjresponsable($objResponsable);
-                    }else {
-                        $this->setobjresponsable('');
-                    }
+                    $objResponsable->buscar($row2['rnumeroempleado']);
+                    $this->setobjresponsable($objResponsable);
+                    
                     $resp = true;
                 }
             }else {

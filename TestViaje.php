@@ -37,11 +37,11 @@ while ($noSalir) {
             break;
         
         case '3': // RESPONSABLES
-            # code...
+            menuResponsable();
             break;
 
         case '4': // PASAJEROS
-            # code...
+            menuPasajero();
             break;
         
         case '5': // SALIR
@@ -144,8 +144,7 @@ function menuEmpresas(){
                 break;
             
             default:
-                
-                break;
+            echo "Opcion incorrecta!\n";
         }
     }
 }
@@ -375,6 +374,8 @@ function menuViajes(){
             case '6': // SALIR
                 $noSalir = false;
                 break;
+            default:
+            echo "Opcion incorrecta!\n";
         }
     }
 }
@@ -409,6 +410,13 @@ function hayViaje(){
     return $hayViajeCargado;
 }
 
+function hayPasajero(){
+    $objPasajero = new Pasajero();
+    $arrPasajeros = $objPasajero->listar("");
+    $hayPasajeroCargado = count($arrPasajeros) > 0;
+    return $hayPasajeroCargado;
+}
+
 /**
  * Retorna un boolean si hay o no lugar en el viaje
  */
@@ -417,7 +425,7 @@ function hayLugar($idViaje){
     $viaje->buscar($idViaje);
     $lugares = $viaje->getvcantmaxpasajeros();
     $pasajeros = listadoPasajeros($idViaje);
-    return $pasajeros < $lugares;
+    return count($pasajeros) < $lugares;
 }
 
 function cargarViaje(){
@@ -434,7 +442,7 @@ function cargarViaje(){
     } while ($hayViajesMismoDestino);
 
     echo "Cantidad máxima de pasajeros: \n";
-    $cantMaxPsajeros = trim(fgets(STDIN));
+    $cantMaxPasajeros = trim(fgets(STDIN));
 
     do {// Comprueba que el ID corresponda a una empresa cargada.
         echo "ID de la Empresa: \n";
@@ -466,7 +474,7 @@ function cargarViaje(){
     echo "Ida y vuelta: (si / no)\n";
     $idaVuelta = trim(fgets(STDIN));
 
-    $viaje->cargarDatos($destino, $cantMaxPsajeros, $empresa, $responsable, $importe, $tipoAsiento, $idaVuelta);
+    $viaje->cargarDatos($destino, $cantMaxPasajeros, $empresa, $responsable, $importe, $tipoAsiento, $idaVuelta);
 
     if ($viaje->insertar()) {
         echo "El viaje fue cargado\n";
@@ -483,13 +491,13 @@ function modificarViaje($viaje){
         echo "Ya existe un viaje a ese destino!\n";
     }else {
         echo "Ingrese la cantidad máxima de pasajeros:\n";
-        $cantMaxPsajeros = trim(fgets(STDIN));
+        $cantMaxPasajeros = trim(fgets(STDIN));
         echo "Ingrese el importe:\n";
         $importe = trim(fgets(STDIN));
         echo "Ingrese el tipo de asiento: (cama / semicama):\n";
         $tipoAsiento = trim(fgets(STDIN));
         $viaje->setvdestino($destino);
-        $viaje->setvcantmaxpasajeros($cantMaxPsajeros);
+        $viaje->setvcantmaxpasajeros($cantMaxPasajeros);
         $viaje->setvimporte($importe);
         $viaje->settipoasiento($tipoAsiento);
 
@@ -512,6 +520,203 @@ function viajeMismoDestino($destinoViaje){
         $resp;
     }
     return $resp;
+}
+
+/**
+ * /////  MENU OPCIONES PASAJERO  \\\\\
+ */
+
+ function menuPasajero(){
+    $noSalir = true;
+
+    while ($noSalir) {
+        echo "\n-----  PASAJERO  -----\n
+        1. Ver pasajeros\n
+        2. Cargar un pasajero\n
+        3. Modificar pasajero\n
+        4. Eliminar pasajero\n
+        5. Volver al menú principal\n";
+
+        $opcion = trim(fgets(STDIN));
+
+        switch ($opcion) {
+            case '1': // VER PASAJEROS
+                if (hayPasajero()) {
+                    $pasajero = new Pasajero();
+                    $pasajeros = $pasajero->listar("");
+                    strArray($pasajeros);
+                } else {
+                    echo "No hay pasajeros cargados!\n";
+                }
+                break;
+            case '2': // CARGAR PASAJERO5
+                    cargarPasajero();
+                break;
+            case '3': // MODIFICAR PASAJERO
+                if(hayPasajero()){
+                    
+                    modificarPasajero();
+                } else {
+                    echo "No hay pasajeros cargados!\n";
+                }
+                break;
+            case '4': // ELIMINAR PASAJERO
+                if (hayPasajero()) {
+                    echo "Ingrese el DNI del pasajero a eliminar\n";
+                    $dniPasajero = trim(fgets(STDIN));
+                    $pasajero = new Pasajero();
+                    if ($pasajero->buscar($dniPasajero)) {
+                        eliminarPasajero($pasajero);    
+                    } else {
+                        echo "El DNI ingresado no corresponde a ningún pasajero cargado.\n";
+                    }    
+                }else {
+                    echo "No hay pasajeros cargados.\n";
+                }
+                break;
+            case '5': // SALIR
+                $noSalir = false;
+                break;
+            default:
+                echo "Opcion incorrecta!\n";
+        }
+    }
+ }
+
+function cargarPasajero(){
+    $pasajero = new Pasajero();
+    echo "Ingrese los datos del pasajero: \n";
+
+    do {
+        echo "DNI: \n";
+        $dniPasajero = trim(fgets(STDIN));
+        $check = $pasajero->buscar($dniPasajero);
+        if ($check) {
+            echo "El documento ingresado ya existe.\n";
+        }
+    } while ($check);
+    
+    echo "Nombre: \n";
+    $nombre = trim(fgets(STDIN));
+    echo "Apellido: \n";
+    $apellido = trim(fgets(STDIN));
+    echo "Teléfono: \n";
+    $telefono = trim(fgets(STDIN));
+
+    do {
+        echo "ID del viaje: \n";
+        $idViaje = trim(fgets(STDIN));
+        $viaje = new Viaje();
+        $check = $viaje->buscar($idViaje);
+        
+        if (!$check) {
+            echo "El ID ingresado no corresponde a ningún viaje.\n";
+        }else {
+            $pasajeros = listadoPasajeros($idViaje);
+            $cantMaxPasajeros = $viaje->getvcantmaxpasajeros();
+
+            if (count($pasajeros) >= $cantMaxPasajeros) {
+                echo "El viaje ya está completo. Elija otro.\n";
+                $check = false;
+            }
+        }
+    } while (!$check);
+
+    $pasajero->cargarDatos($dniPasajero, $nombre,$apellido,$telefono, $viaje);
+
+    if ($pasajero->insertar()) {
+        echo "El pasajero fue cargado con éxito!\n";
+    } else {
+        echo "No se pudo cargar el pasajero.\n";
+    }
+}
+
+function modificarPasajero(){
+    $pasajero = new Pasajero();
+    $pasajeros = $pasajero->listar();
+    strArray($pasajeros);
+
+    echo "Ingrese el Nro de DNI del pasajero: \n";
+    $dni = trim(fgets(STDIN));
+
+    $pasajero->buscar($dni);
+
+    if ($pasajero->getrdocumento() != "")
+    {
+        echo "Ingrese nombre: \n";
+        $nombre = trim(fgets(STDIN));
+        echo "Ingrese Apellido: \n";
+        $apellido = trim(fgets(STDIN));
+        echo "Ingrese telefono: \n";
+        $telefono = trim(fgets(STDIN));  
+        
+        $pasajero->setpnombre($nombre);
+        $pasajero->setapellido($apellido);
+        $pasajero->setptelefono($telefono);
+
+
+        echo "Ingrese ID del viaje: \n";
+        $id = trim(fgets(STDIN));
+
+        $viaje = new Viaje();
+        if ($viaje->buscar($id)) {
+            if (hayLugar($id)) {
+                $pasajero->setobjviaje($viaje);
+
+            } else {
+                echo "No hay lugar disponible en este viaje.\n";
+            }
+        } else {
+            echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
+        }
+    }
+
+    if ($pasajero->modificar()) {
+        echo "El pasajero se modificó con éxito!\n";
+    }else {
+        echo "No se pudo modificar al pasajero.\n";
+    }
+}
+
+/**
+ * /////  MENU OPCIONES RESPONSABLE  \\\\\
+ */
+function menuResponsable(){
+    $noSalir = true;
+
+    while ($noSalir) {
+        echo "\n-----  RESPONSABLE  -----\n
+        1. Ver responsables\n
+        2. Cargar un responsable\n
+        3. Modificar responsable\n
+        4. Eliminar responsable\n
+        5. Volver al menú principal\n";
+
+        $opcion = trim(fgets(STDIN));
+
+        switch ($opcion) {
+            case '1': // VER RESPONSABLES
+                # code...
+                break;
+            
+            case '2': //CARGAR RESPONSABLE
+                # code...
+                break;
+            case '3': // MODIFICAR RESPONSABLE
+                # code...
+                break;
+            case '4': //ELIMINAR RESPONSABLE
+                # code...
+                break;
+            case '5': // SALIR
+                $noSalir = false;
+                break;
+            
+            default:
+                echo "Opcion incorrecta.\n";
+                break;
+        }
+    }
 }
 
 /**
