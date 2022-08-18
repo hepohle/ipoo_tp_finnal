@@ -1,0 +1,23 @@
+
+INSERT INTO 'empresa' ('idempresa', 'enombre', 'edireccion') VALUES
+(3, 'JetBus', 'San Martin 123'),
+(4, 'Koko', 'Brown 111'),
+(6, 'Expreso del norte', 'Brown 666'),
+(7, 'Bubu Bus', 'Alem 123');
+
+INSERT INTO 'responsable' ('rnumeroempleado', 'rnumerolicencia', 'rnombre', 'rapellido') VALUES
+(1, 123, 'Juan', 'Perez'),
+(2, 234, 'Pablo', 'Martin'),
+(3, 567, 'Luis', 'Juez');
+
+INSERT INTO 'viaje' ('idviaje', 'vdestino', 'vcantmaxpasajeros', 'idempresa', 'rnumeroempleado', 'vimporte', 'tipoAsiento', 'idayvuelta') VALUES
+(6, 'uruguay', 4, 3, 1, 2000, 'cama', 'si'),
+(7, 'Posadas', 9, 3, 3, 8500, 'cama', 'si'),
+(8, 'Buenos Aires', 4, 3, 1, 15000, 'cama', 'no');
+
+INSERT INTO 'pasajero' ('rdocumento', 'pnombre', 'papellido', 'ptelefono', 'idviaje') VALUES
+('123456', 'Pedro', 'Pascal', 456654, 8),
+('326598', 'Luis', 'Suarez', 582514, 8),
+('548765', 'Henry', 'Ford', 6554871, 8),
+('875421', 'Guillermo', 'Tell', 659845, 8),
+('875621', 'Frank', 'Loyd', 5557744, 6);
