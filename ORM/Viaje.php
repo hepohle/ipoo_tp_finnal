@@ -26,7 +26,7 @@ class Viaje
         $this->vimporte = '';
         $this->tipoasiento = '';
         $this->idayvuelta = '';
-        $this->coleccionPasajeros = '';
+        $this->coleccionPasajeros = [];
     }
 
     public function getidviaje(){
@@ -54,6 +54,11 @@ class Viaje
         return $this->idayvuelta;
     }
     public function getcoleccionPasajeros(){
+        $pasajero = new Pasajero();
+        $condicion = "idviaje= '" . $this->getidviaje() . "'";
+        $pasajeros = $pasajero->listar($condicion);
+        $this->setcoleccionPasajeros($pasajeros);
+        
         return $this->coleccionPasajeros;
     }
     public function getmensajeoperacion(){
