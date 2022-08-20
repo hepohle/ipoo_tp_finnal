@@ -1,7 +1,4 @@
 <?php
-require_once('BaseDatos.php');
-require_once('Empresa.php');
-require_once('ResponsableV.php');
 
 class Viaje
 {
@@ -54,11 +51,6 @@ class Viaje
         return $this->idayvuelta;
     }
     public function getcoleccionPasajeros(){
-        $pasajero = new Pasajero();
-        $condicion = "idviaje= '" . $this->getidviaje() . "'";
-        $pasajeros = $pasajero->listar($condicion);
-        $this->setcoleccionPasajeros($pasajeros);
-        
         return $this->coleccionPasajeros;
     }
     public function getmensajeoperacion(){
@@ -123,8 +115,23 @@ class Viaje
         $str .= "Responsable: " . $responsableStr . "\n";
         $str .= "Importe: $" . $this->getvimporte() . "\n";
         $str .= "Tipo de Asiento: " . $this->gettipoasiento() . "\n";
+        $str .= "Pasajeros: " . $this->strArrPasajeros(). "\n";
         $str .= "Ida y Vuelta: " . $this->getidayvuelta() . "\n";
         return $str;
+    }
+
+    public function strArrPasajeros()
+    {
+        $objPasajeros = new pasajero();
+
+        $condicion = " idviaje = " . $this->getIdViaje();
+        $coleccionPasajeros = $objPasajeros->Listar($condicion);
+        $retorno = "";
+
+        foreach ($coleccionPasajeros as $pasajero) {
+            $retorno .= $pasajero->__toString() . "\n-------------";
+        }
+        return $retorno;
     }
 
     public function insertar(){

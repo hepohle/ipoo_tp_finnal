@@ -1,5 +1,5 @@
 <?php
-
+include_once 'BaseDatos.php';
 include_once 'Pasajero.php';
 include_once 'Viaje.php';
 include_once 'ResponsableV.php';
@@ -14,12 +14,13 @@ echo"    / _ )__ _____ ___    | | / (_)__ _  (_)__ / /\n";
 echo"   / _  / // / -_) _ \   | |/ / / _ `/ / / -_)_/ \n";
 echo"  /____/\_,_/\__/_//_/   |___/_/\_,_/_/ /\__(_)  \n";
 echo"                                   |___/         \n";
-    echo "\n-----  MENU PRINCIPAL  -----\n
-    1. EMPRESAS\n
-    2. VIAJES\n
-    3. RESPONSABLES\n
-    4. PASAJEROS\n
-    5. SALIR DEL MENÚ\n";
+    echo "\n\e[1;37;42m-----  MENU PRINCIPAL  -----\e[0m\n";
+echo 
+"\n1. EMPRESAS\n
+2. VIAJES\n
+3. RESPONSABLES\n
+4. PASAJEROS\n
+5. SALIR DEL MENÚ\n";
 }
 
 $noSalir = true;
@@ -61,13 +62,14 @@ function menuEmpresas(){
     $noSalir = true;
 
     while ($noSalir) {
-        echo "\n-----  EMPRESAS  -----\n
-        1. Ver empresas\n
-        2. Cargar empresa\n
-        3. Modificar empresa\n
-        4. Eliminar empresa\n
-        5. Mostrar viajes de empresa\n
-        6. Volver al menú principal\n";
+        echo "\n\e[1;37;42m-----  EMPRESAS  -----\e[0m\n";
+        echo
+"\n1. Ver empresas\n
+2. Cargar empresa\n
+3. Modificar empresa\n
+4. Eliminar empresa\n
+5. Mostrar viajes de empresa\n
+6. Volver al menú principal\n";
         
         $opcion = trim(fgets(STDIN));
 
@@ -78,7 +80,7 @@ function menuEmpresas(){
                 if (hayEmpresa()) {
                     strArray($arrEmpresas);    
                 } else {
-                    echo "No hay empresas cargadas\n";
+                    echo "\e[1;37;41mNo hay empresas cargadas\e[0m\n";
                 }
                 
                 break;
@@ -116,9 +118,9 @@ function menuEmpresas(){
                         }
                     }
                     if ($objEmpresa->eliminar()) {
-                        echo "La empresa fue eliminada\n";
+                        echo "\e[1;37;42mLa empresa fue eliminada\e[0m\n";
                     }else {
-                        echo "No se pudo eliminar la empresa\n";
+                        echo "\e[1;37;41mNo se pudo eliminar la empresa\e[0m\n";
                     }
                 }
 
@@ -134,7 +136,7 @@ function menuEmpresas(){
                 if (count($viajes) > 0) {
                     strArray($viajes);    
                 } else {
-                    echo "La empresa no tiene viajes cargados.\n";
+                    echo "\e[1;37;41mLa empresa no tiene viajes cargados.\e[0m\n";
                 }
                 
                 break;
@@ -144,7 +146,7 @@ function menuEmpresas(){
                 break;
             
             default:
-            echo "Opcion incorrecta!\n";
+            echo "\e[1;37;41mOpcion incorrecta!\e[0m\n";
         }
     }
 }
@@ -164,12 +166,12 @@ function modificarEmpresa($idempresa){
         $objEmpresa->setEdireccion($edireccion);
 
         if ($objEmpresa->modificar()) {
-            echo "La empresa se modificó con exito!\n";
+            echo "\e[1;37;42mLa empresa se modificó con exito!\e[0m\n";
         }else {
             echo "No se pudo modificar la empresa\n";
         }
     } else {
-        echo "Ingrese un ID de empresa válido\n";
+        echo "\e[1;37;41mIngrese un ID de empresa válido\e[0m\n";
     }
 }
 
@@ -185,7 +187,7 @@ function cargarEmpresa(){
     $objEmpresa->cargarDatos($nombreEmpresa, $direccionEmpresa);
 
     if ($objEmpresa->insertar()) {
-        echo "La empresa se cargó con éxito!\n";
+        echo "\e[1;37;42mLa empresa se cargó con éxito!\e[0m\n";
         
     }else {
         echo "No pudo cargarse la empresa\n";
@@ -244,9 +246,9 @@ function viajesEmpresa($id){
  */
 function eliminarEmpresa($objEmpresa){
     if($objEmpresa->eliminar()) {
-        echo "La empresa se eliminó con éxito\n";
+        echo "\e[1;37;42mLa empresa se eliminó con éxito\e[0m\n";
     } else {
-        echo "La empresa no se pudo eliminar.\n";
+        echo "\e[1;37;41mLa empresa no se pudo eliminar.\e[0m\n";
     }
 }
 
@@ -255,9 +257,9 @@ function eliminarEmpresa($objEmpresa){
  */
 function eliminarPasajero($pasajero){
     if ($pasajero->eliminar()) {
-        echo "Se elimino el pasajero\n";
+        echo "\e[1;37;42mSe elimino el pasajero\e[0m\n";
     } else {
-        echo "No se pudo eliminar el pasajero\n";
+        echo "\e[1;37;41mNo se pudo eliminar el pasajero\e[0m\n";
     }
 }
 
@@ -266,9 +268,9 @@ function eliminarPasajero($pasajero){
  */
 function eliminarViaje($objViaje){
      if ($objViaje->eliminar()) {
-         echo "El viaje se elimino con éxito.\n";
+         echo "\e[1;37;42mEl viaje se elimino con éxito.\e[0m\n";
      } else {
-         echo "No se pudo eliminar el viaje\n";
+         echo "\e[1;37;41mNo se pudo eliminar el viaje\e[0m\n";
      }
 }
 
@@ -279,13 +281,14 @@ function menuViajes(){
     $noSalir = true;
 
     while ($noSalir) {
-        echo "\n-----  VIAJES  -----\n
-        1. Ver viajes\n
-        2. Cargar un viaje\n
-        3. Modificar viaje\n
-        4. Eliminar viaje\n
-        5. Mostrar pasajeros del viaje\n
-        6. Volver al menú principal\n";
+        echo "\n\e[1;37;42m-----  VIAJES  -----\e[0m\n";       
+        echo
+"\n1. Ver viajes\n
+2. Cargar un viaje\n
+3. Modificar viaje\n
+4. Eliminar viaje\n
+5. Mostrar pasajeros del viaje\n
+6. Volver al menú principal\n";
 
         $opcion = trim(fgets(STDIN));
 
@@ -296,7 +299,7 @@ function menuViajes(){
                 if (hayViaje()) {      
                     strArray($arrViajes);
                 }else {
-                    echo "No hay viajes cargados\n";
+                    echo "\e[1;37;41mNo hay viajes cargados\e[0m\n";
                 }
                 
                 break;
@@ -304,7 +307,7 @@ function menuViajes(){
                 if (hayEmpresa() && hayResponsable()) {
                     cargarViaje();
                 }else {
-                    echo "No hay Empresas y/o Responsables cargados. No es posible cargar viajes.\n";
+                    echo "\e[1;37;41mNo hay Empresas y/o Responsables cargados. No es posible cargar viajes.\e[0m\n";
                 }
                 break;
             case '3': // MODIFICAR VIAJE
@@ -319,11 +322,11 @@ function menuViajes(){
                     if ($viaje->buscar($id)) {
                         modificarViaje($viaje);
                     } else {
-                        echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
+                        echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
                     }
 
                 }else {
-                    echo "No hay viajes cargados para modificar\n";
+                    echo "\e[1;37;41mNo hay viajes cargados para modificar\e[0m\n";
                 }
                 break;
             case '4': // ELIMINAR VIAJE
@@ -334,7 +337,7 @@ function menuViajes(){
                 $idViaje = trim(fgets(STDIN));
                 if($viaje->buscar($idViaje)){
                     if (count(listadoPasajeros($idViaje)) > 0) {
-                        echo "El viaje tiene pasajeros, quiere borrarlos? (si / no)\n";
+                        echo "\e[1;37;42mEl viaje tiene pasajeros, quiere borrarlos? (si / no)\e[0m\n";
                         $resp = strtoupper(trim(fgets(STDIN)));
                         if ($resp == "SI") {
                             eliminarPasajeros($viaje);
@@ -344,7 +347,7 @@ function menuViajes(){
                         eliminarViaje($viaje);
                     }
                 } else {
-                    echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
+                    echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
                 }
                 break;
             case '5': // MOSTRAR PASAJEROS DEL VIAJE
@@ -361,21 +364,21 @@ function menuViajes(){
                         if (count($pasajeros) > 0) {
                             strArray($pasajeros);
                         } else {
-                            echo "El viaje no tiene pasajeros\n";
+                            echo "\e[1;37;41mEl viaje no tiene pasajeros\e[0m\n";
                         }
                     } else {
-                        echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
+                        echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
                     }
 
                 }else {
-                    echo "No hay viajes cargados.\n";
+                    echo "\e[1;37;41mNo hay viajes cargados.\e[0m\n";
                 }
                 break;
             case '6': // SALIR
                 $noSalir = false;
                 break;
             default:
-            echo "Opcion incorrecta!\n";
+            echo "\e[1;37;41mOpcion incorrecta!\e[0m\n";
         }
     }
 }
@@ -437,7 +440,7 @@ function cargarViaje(){
         $destino = trim(fgets(STDIN));
         $hayViajesMismoDestino = viajeMismoDestino($destino);
         if ($hayViajesMismoDestino) {
-            echo "Ya hay un viaje cargado a ese destino\n";
+            echo "\e[1;37;41mYa hay un viaje cargado a ese destino\e[0m\n";
         }
     } while ($hayViajesMismoDestino);
 
@@ -450,7 +453,7 @@ function cargarViaje(){
         $empresa = new Empresa();
         $hayEmpresa = $empresa->buscar($idEmpresa);
         if (!$hayEmpresa) {
-            echo "El ID ingresado no corresponde a ninguna empresa cargada.\n";
+            echo "\e[1;37;41mEl ID ingresado no corresponde a ninguna empresa cargada.\e[0m\n";
         }
     } while (!$hayEmpresa);
 
@@ -461,7 +464,7 @@ function cargarViaje(){
         $hayResponsable = $responsable->buscar($nroResponsable);
 
         if (!$hayResponsable) {
-            echo "El número ingresado no coresponde a ningún empleado cargado \n";
+            echo "\e[1;37;41mEl número ingresado no coresponde a ningún empleado cargado \e[0m\n";
         }
     } while (!$hayResponsable);
 
@@ -488,7 +491,7 @@ function modificarViaje($viaje){
     echo "Ingrese el destino: \n";
     $destino = trim(fgets(STDIN));
     if (viajeMismoDestino($destino)) {
-        echo "Ya existe un viaje a ese destino!\n";
+        echo "\e[1;37;41mYa existe un viaje a ese destino!\e[0m\n";
     }else {
         echo "Ingrese la cantidad máxima de pasajeros:\n";
         $cantMaxPasajeros = trim(fgets(STDIN));
@@ -502,7 +505,7 @@ function modificarViaje($viaje){
         $viaje->settipoasiento($tipoAsiento);
 
         if ($viaje->modificarViaje()) {
-            echo "El viaje se modificó con éxito!\n";
+            echo "\e[1;37;42mEl viaje se modificó con éxito!\e[0m\n";
         }else {
             echo "No se pudo modificar el viaje\n";
         }
@@ -530,12 +533,13 @@ function viajeMismoDestino($destinoViaje){
     $noSalir = true;
 
     while ($noSalir) {
-        echo "\n-----  PASAJERO  -----\n
-        1. Ver pasajeros\n
-        2. Cargar un pasajero\n
-        3. Modificar pasajero\n
-        4. Eliminar pasajero\n
-        5. Volver al menú principal\n";
+        echo "\n\e[1;37;42m-----  PASAJERO  -----\e[0m\n";
+        echo
+"\n1. Ver pasajeros\n
+2. Cargar un pasajero\n
+3. Modificar pasajero\n
+4. Eliminar pasajero\n
+5. Volver al menú principal\n";
 
         $opcion = trim(fgets(STDIN));
 
@@ -546,7 +550,7 @@ function viajeMismoDestino($destinoViaje){
                     $pasajeros = $pasajero->listar("");
                     strArray($pasajeros);
                 } else {
-                    echo "No hay pasajeros cargados!\n";
+                    echo "\e[1;37;41mNo hay pasajeros cargados!\e[0m\n";
                 }
                 break;
             case '2': // CARGAR PASAJERO5
@@ -557,7 +561,7 @@ function viajeMismoDestino($destinoViaje){
                     
                     modificarPasajero();
                 } else {
-                    echo "No hay pasajeros cargados!\n";
+                    echo "\e[1;37;41mNo hay pasajeros cargados!\e[0m\n";
                 }
                 break;
             case '4': // ELIMINAR PASAJERO
@@ -568,17 +572,17 @@ function viajeMismoDestino($destinoViaje){
                     if ($pasajero->buscar($dniPasajero)) {
                         eliminarPasajero($pasajero);    
                     } else {
-                        echo "El DNI ingresado no corresponde a ningún pasajero cargado.\n";
+                        echo "\e[1;37;41mEl DNI ingresado no corresponde a ningún pasajero cargado.\e[0m\n";
                     }    
                 }else {
-                    echo "No hay pasajeros cargados.\n";
+                    echo "\e[1;37;41mNo hay pasajeros cargados.\e[0m\n";
                 }
                 break;
             case '5': // SALIR
                 $noSalir = false;
                 break;
             default:
-                echo "Opcion incorrecta!\n";
+                echo "\e[1;37;41mOpcion incorrecta!\e[0m\n";
         }
     }
  }
@@ -592,7 +596,7 @@ function cargarPasajero(){
         $dniPasajero = trim(fgets(STDIN));
         $check = $pasajero->buscar($dniPasajero);
         if ($check) {
-            echo "El documento ingresado ya existe.\n";
+            echo "\e[1;37;41mEl documento ingresado ya existe.\e[0m\n";
         }
     } while ($check);
     
@@ -610,13 +614,13 @@ function cargarPasajero(){
         $check = $viaje->buscar($idViaje);
         
         if (!$check) {
-            echo "El ID ingresado no corresponde a ningún viaje.\n";
+            echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje.\e[0m\n";
         }else {
             $pasajeros = listadoPasajeros($idViaje);
             $cantMaxPasajeros = $viaje->getvcantmaxpasajeros();
 
             if (count($pasajeros) >= $cantMaxPasajeros) {
-                echo "El viaje ya está completo. Elija otro.\n";
+                echo "\e[1;37;41mEl viaje ya está completo. Elija otro.\e[0m\n";
                 $check = false;
             }
         }
@@ -625,7 +629,7 @@ function cargarPasajero(){
     $pasajero->cargarDatos($dniPasajero, $nombre,$apellido,$telefono, $viaje);
 
     if ($pasajero->insertar()) {
-        echo "El pasajero fue cargado con éxito!\n";
+        echo "\e[1;37;42mEl pasajero fue cargado con éxito!\e[0m\n";
     } else {
         echo "No se pudo cargar el pasajero.\n";
     }
@@ -639,42 +643,43 @@ function modificarPasajero(){
     echo "Ingrese el Nro de DNI del pasajero: \n";
     $dni = trim(fgets(STDIN));
 
-    $pasajero->buscar($dni);
+    if($pasajero->buscar($dni)){
 
-    if ($pasajero->getrdocumento() != "")
-    {
-        echo "Ingrese nombre: \n";
-        $nombre = trim(fgets(STDIN));
-        echo "Ingrese Apellido: \n";
-        $apellido = trim(fgets(STDIN));
-        echo "Ingrese telefono: \n";
-        $telefono = trim(fgets(STDIN));  
-        
-        $pasajero->setpnombre($nombre);
-        $pasajero->setapellido($apellido);
-        $pasajero->setptelefono($telefono);
+        if ($pasajero->getrdocumento() != ""){
+            echo "Ingrese nombre: \n";
+            $nombre = trim(fgets(STDIN));
+            echo "Ingrese Apellido: \n";
+            $apellido = trim(fgets(STDIN));
+            echo "Ingrese telefono: \n";
+            $telefono = trim(fgets(STDIN));  
+            
+            $pasajero->setpnombre($nombre);
+            $pasajero->setapellido($apellido);
+            $pasajero->setptelefono($telefono);
 
 
-        echo "Ingrese ID del viaje: \n";
-        $id = trim(fgets(STDIN));
+            echo "Ingrese ID del viaje: \n";
+            $id = trim(fgets(STDIN));
 
-        $viaje = new Viaje();
-        if ($viaje->buscar($id)) {
-            if (hayLugar($id)) {
-                $pasajero->setobjviaje($viaje);
+            $viaje = new Viaje();
+            if ($viaje->buscar($id)) {
+                if (hayLugar($id)) {
+                    $pasajero->setobjviaje($viaje);
 
+                } else {
+                    echo "\e[1;37;41mNo hay lugar disponible en este viaje.\e[0m\n";
+                }
             } else {
-                echo "No hay lugar disponible en este viaje.\n";
+                echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
             }
-        } else {
-            echo "El ID ingresado no corresponde a ningún viaje cargado.\n";
         }
-    }
-
-    if ($pasajero->modificar()) {
-        echo "El pasajero se modificó con éxito!\n";
+        if ($pasajero->modificar()) {
+            echo "\e[1;37;42mEl pasajero se modificó con éxito!\e[0m\n";
+        }else {
+            echo "No se pudo modificar al pasajero.\n";
+        }
     }else {
-        echo "No se pudo modificar al pasajero.\n";
+        echo "\e[1;37;41mEl dni ingresado no corresponde a ningun pasajero\e[0m\n";
     }
 }
 
@@ -685,12 +690,13 @@ function menuResponsable(){
     $noSalir = true;
 
     while ($noSalir) {
-        echo "\n-----  RESPONSABLE  -----\n
-        1. Ver responsables\n
-        2. Cargar un responsable\n
-        3. Modificar responsable\n
-        4. Eliminar responsable\n
-        5. Volver al menú principal\n";
+        echo "\n\e[1;37;42m-----  RESPONSABLE  -----\e[0m\n";
+        echo
+"\n1. Ver responsables\n
+2. Cargar un responsable\n
+3. Modificar responsable\n
+4. Eliminar responsable\n
+5. Volver al menú principal\n";
 
         $opcion = trim(fgets(STDIN));
 
@@ -701,7 +707,7 @@ function menuResponsable(){
                 if (count($responsables) > 0 ) {
                     strArray($responsables);
                 } else {
-                    echo "No hay responsables cargados\n";
+                    echo "\e[1;37;41mNo hay responsables cargados\e[0m\n";
                 }
                 break;
             
@@ -727,16 +733,16 @@ function menuResponsable(){
                         $responsable->setrapellido($apellido);
 
                         if ($responsable->modificar()) {
-                            echo "El responsable fue modificado con éxito.\n";
+                            echo "\e[1;37;42mEl responsable fue modificado con éxito.\e[0m\n";
                         } else {
                             echo "No se pudo modificar el responsable\n";
                         }
 
                     } else {
-                        echo "El nº de empleado ingresado no corresponde a ningún responsable cargado.\n";
+                        echo "\e[1;37;41mEl nº de empleado ingresado no corresponde a ningún responsable cargado.\e[0m\n";
                     }
                 } else {
-                    echo "No hay responsables cargados.\n";
+                    echo "\e[1;37;41mNo hay responsables cargados.\e[0m\n";
                 }
                 break;
             case '4': //ELIMINAR RESPONSABLE
@@ -752,15 +758,15 @@ function menuResponsable(){
 
                         if (count($viajesConResponsable) == 0) {
                             if ($responsable->eliminar()) {
-                                echo "Se eliminó con éxito.\n";
+                                echo "\e[1;37;42mSe eliminó con éxito.\e[0m\n";
                             } else {
                                 echo "No se pudo eliminar el responsable\n";
                             }
                         }else {
-                            echo "No se puede eliminar tiene viajes a cargo.\n";
+                            echo "\e[1;37;41mNo se puede eliminar tiene viajes a cargo.\e[0m\n";
                         }
                     } else {
-                        echo "El nº ingresado no corresponde a ningún responsable cargado.\n";
+                        echo "\e[1;37;41mEl nº ingresado no corresponde a ningún responsable cargado.\e[0m\n";
                     }
                 }
                 break;
@@ -769,7 +775,7 @@ function menuResponsable(){
                 break;
             
             default:
-                echo "Opcion incorrecta.\n";
+                echo "\e[1;37;41mOpcion incorrecta.\e[0m\n";
                 break;
         }
     }
@@ -787,7 +793,7 @@ function insertarResponsable(){
     $responsable->cargarDatos($numLicencia, $nombre, $apellido);
 
     if ($responsable->insertar()) {
-        echo "Responsable insertado con exito!\n";
+        echo "\e[1;37;42mResponsable insertado con exito!\e[0m\n";
     } else {
         echo "No se pudo insertar el responsable.\n";
     }
