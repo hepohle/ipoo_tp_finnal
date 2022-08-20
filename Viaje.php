@@ -99,6 +99,27 @@ class Viaje
         $this->setidayvuelta($idayvuelta);
     }
 
+
+    function arrColPasajeros(){
+        $base = new BaseDatos();
+        $resp = false;
+        $condicion = "idviaje = " . $this->getidviaje();
+
+        if ($base->Iniciar()) {
+            $objPasajero = new Pasajero();
+            $coleccionPasajeros = $objPasajero->listar($condicion);
+            if (is_array($coleccionPasajeros)) {
+                $this->setcoleccionPasajeros($coleccionPasajeros);
+                $resp = true;
+            }else {
+                $this->setmensajeoperacion($base->getError());
+            }
+        }else {
+            $this->setmensajeoperacion($base->getError());
+        }
+        return $resp;
+    }
+
     public function __toString()
     {
         $id_viaje = $this->getidviaje();
