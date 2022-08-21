@@ -1,5 +1,5 @@
 <?php
-include_once 'ORM/BaseDatos.php';
+include_once 'BaseDatos.php';
 
 $baseDatos = new BaseDatos();
 

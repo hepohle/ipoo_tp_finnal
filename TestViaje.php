@@ -9,11 +9,11 @@ include_once 'Empresa.php';
  * \\\\ MENU PRINCIPAL /////
  */
 function menuPrincipal(){
-echo"     ___                  _   ___        _     __\n";
-echo"    / _ )__ _____ ___    | | / (_)__ _  (_)__ / /\n";
-echo"   / _  / // / -_) _ \   | |/ / / _ `/ / / -_)_/ \n";
-echo"  /____/\_,_/\__/_//_/   |___/_/\_,_/_/ /\__(_)  \n";
-echo"                                   |___/         \n";
+    echo"\e[32m     ___                  _   ___        _     __\e[0m\n";
+    echo"\e[32m    / _ )__ _____ ___    | | / (_)__ _  (_)__ / /\e[0m\n";
+    echo"\e[32m   / _  / // / -_) _ \   | |/ / / _ `/ / / -_)_/ \e[0m\n";
+    echo"\e[32m  /____/\_,_/\__/_//_/   |___/_/\_,_/_/ /\__(_)  \e[0m\n";
+    echo"\e[32m                                   |___/         \e[0m\n";
     echo "\n\e[1;37;42m-----  MENU PRINCIPAL  -----\e[0m\n";
 echo 
 "\n1. EMPRESAS\n
