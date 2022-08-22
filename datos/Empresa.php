@@ -4,6 +4,7 @@ class Empresa
     private $idempresa;
     private $enombre;
     private $edireccion;
+    private $coleccionViajes;
     private $mensajeoperacion;
 
     public function __construct()
@@ -11,6 +12,7 @@ class Empresa
         $this->idempresa = '';
         $this->enombre = '';
         $this->edireccion = '';
+        $this->coleccionViajes = '';
         $this->mensajeoperacion = '';
     }
 
@@ -25,6 +27,12 @@ class Empresa
     }
     public function setEnombre($enombre){
         $this->enombre = $enombre;
+    }
+    public function getColeccionViajes(){
+        return $this->enombre;
+    }
+    public function setColleccionViajes($coleccionViajes){
+        $this->enombre = $coleccionViajes;
     }
     public function getEdireccion(){
         return $this->edireccion;

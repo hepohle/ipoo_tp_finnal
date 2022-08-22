@@ -4,6 +4,10 @@ include_once 'datos/Pasajero.php';
 include_once 'datos/Viaje.php';
 include_once 'datos/ResponsableV.php';
 include_once 'datos/Empresa.php';
+include_once 'control/abmEmpresa.php';
+include_once 'control/abmPasajero.php';
+include_once 'control/abmResponsableV.php';
+include_once 'control/abmViaje.php';
 
 /**
  * \\\\ MENU PRINCIPAL /////
@@ -75,14 +79,7 @@ function menuEmpresas(){
 
         switch ($opcion) {
             case '1': // VER EMPRESAS
-                $objEmpresa = new Empresa();
-                $arrEmpresas = $objEmpresa->listar();
-                if (hayEmpresa()) {
-                    strArray($arrEmpresas);    
-                } else {
-                    echo "\e[1;37;41mNo hay empresas cargadas\e[0m\n";
-                }
-                
+                verEmpresas();
                 break;
 
             case '2': // CARGAR EMPRESA
@@ -90,40 +87,46 @@ function menuEmpresas(){
                 break;
 
             case '3': // MODIFICAR EMPRESA
-                echo "Seleccione la empresa que quiere modificar: \n";
-                $objEmpresa = new Empresa();
-                $arrEmpresas = $objEmpresa->listar();
-                strArray($arrEmpresas);
-                $idempresa = trim(fgets(STDIN));
-                modificarEmpresa($idempresa);
-                break;
+                // echo "Seleccione la empresa que quiere modificar: \n";
+                // $objEmpresa = new Empresa();
+                // $arrEmpresas = $objEmpresa->listar();
+                // strArray($arrEmpresas);
+                // $idempresa = trim(fgets(STDIN));
+                // modificarEmpresa($idempresa);
+
+                modificarEmpresa();
+                
+
+
+            break;
                 
             case '4': //ELIMINAR EMPRESA
-                echo "Seleccione la empresa que quiere eliminar: \n";
-                $objEmpresa = new Empresa();
-                $arrEmpresas = $objEmpresa->listar();
-                strArray($arrEmpresas);
-                $idempresa = trim(fgets(STDIN));
+                // echo "Seleccione la empresa que quiere eliminar: \n";
+                // $objEmpresa = new Empresa();
+                // $arrEmpresas = $objEmpresa->listar();
+                // strArray($arrEmpresas);
+                // $idempresa = trim(fgets(STDIN));
                 
-                if ($objEmpresa->buscar($idempresa)) {
-                    $viaje = new Viaje();
-                    $condicion = 'idempresa = ' . $idempresa;
-                    $viajesEmpresa = $viaje->listar($condicion);
-                    if (!empty($viajesEmpresa)) {
-                        echo "La empresa tiene viajes y pasajeros, desea borrar todo? (si / no)\n"; // si o no
-                        $opcion = trim(fgets(STDIN));
-                        if ($opcion == 'si') {
-                            eliminarViajesEmpresa($objEmpresa);
-                            eliminarEmpresa($objEmpresa);
-                        }
-                    }
-                    if ($objEmpresa->eliminar()) {
-                        echo "\e[1;37;42mLa empresa fue eliminada\e[0m\n";
-                    }else {
-                        echo "\e[1;37;41mNo se pudo eliminar la empresa\e[0m\n";
-                    }
-                }
+                // if ($objEmpresa->buscar($idempresa)) {
+                //     $viaje = new Viaje();
+                //     $condicion = 'idempresa = ' . $idempresa;
+                //     $viajesEmpresa = $viaje->listar($condicion);
+                //     if (!empty($viajesEmpresa)) {
+                //         echo "La empresa tiene viajes y pasajeros, desea borrar todo? (si / no)\n"; // si o no
+                //         $opcion = trim(fgets(STDIN));
+                //         if ($opcion == 'si') {
+                //             eliminarViajesEmpresa($objEmpresa);
+                //             eliminarEmpresa($objEmpresa);
+                //         }
+                //     }
+                //     if ($objEmpresa->eliminar()) {
+                //         echo "\e[1;37;42mLa empresa fue eliminada\e[0m\n";
+                //     }else {
+                //         echo "\e[1;37;41mNo se pudo eliminar la empresa\e[0m\n";
+                //     }
+                // }
 
+                borrarEmpresa();
                 break;
 
             case '5': // MOSTRAR VIAJES DE EMPRESA
@@ -151,50 +154,70 @@ function menuEmpresas(){
     }
 }
 
-/**
- * Modifica una empresa.
- */
-function modificarEmpresa($idempresa){
-    $objEmpresa = new Empresa();
-    if ($objEmpresa->buscar($idempresa)) {
-        echo $objEmpresa->__toString();
-        echo "Ingrese el nombre: \n";
-        $enombre = trim(fgets(STDIN));
-        echo "Ingrese la dirección\n";
-        $edireccion = trim(fgets(STDIN));
-        $objEmpresa->setEnombre($enombre);
-        $objEmpresa->setEdireccion($edireccion);
+function seleccionarEmpresa(){
+    $abmEmpresa = new abmEmpresa();
 
-        if ($objEmpresa->modificar()) {
-            echo "\e[1;37;42mLa empresa se modificó con exito!\e[0m\n";
-        }else {
-            echo "No se pudo modificar la empresa\n";
-        }
-    } else {
-        echo "\e[1;37;41mIngrese un ID de empresa válido\e[0m\n";
-    }
+    echo $abmEmpresa->listarEmpresas();
+    echo "Seleccione el ID de la empresa: \n";
+    $id = trim(fgets(STDIN));
+    
+    $objEmpresa = $abmEmpresa->traerEmpresa($id);
+
+    return $objEmpresa;
+
+}
+
+/**
+ * Devuelve un string con todos los datos de las empresas cargadas.
+ */
+function verEmpresas(){
+    $abmEmpresa = new abmEmpresa();
+    echo $abmEmpresa->listarEmpresas();
 }
 
 /**
  * Carga una empresa a la base de datos 
  */
 function cargarEmpresa(){
-    $objEmpresa = new Empresa();
+    $abmEmpresa = new abmEmpresa();
     echo "Ingrese el nombre de la empresa: \n";
     $nombreEmpresa = trim(fgets(STDIN));
     echo "Ingrese la dirección de la empresa: \n";
     $direccionEmpresa = trim(fgets(STDIN));
-    $objEmpresa->cargarDatos($nombreEmpresa, $direccionEmpresa);
+    //$abmEmpresa->agregarEmpresa($nombreEmpresa, $direccionEmpresa);
 
-    if ($objEmpresa->insertar()) {
+    if ($abmEmpresa->agregarEmpresa($nombreEmpresa, $direccionEmpresa)) {
         echo "\e[1;37;42mLa empresa se cargó con éxito!\e[0m\n";
         
     }else {
         echo "No pudo cargarse la empresa\n";
-        echo $objEmpresa->getMensajeoperacion();
+        
     }
-    return $objEmpresa;
 }
+
+
+/**
+ * Modifica una empresa.
+ */
+function modificarEmpresa(){
+    $abmEmpresa = new abmEmpresa();
+    $objEmpresa = seleccionarEmpresa();
+
+    echo "Ingrese el nombre: \n";
+    $enombre = trim(fgets(STDIN));
+    echo "Ingrese la dirección\n";
+    $edireccion = trim(fgets(STDIN));
+
+    $modificado = $abmEmpresa->modificarDatosEmpresa($objEmpresa, $enombre, $edireccion);
+    
+    if ($modificado) {
+        echo "\e[1;37;42mLa empresa se modificó con exito!\e[0m\n";
+    }else {
+        echo "No se pudo modificar la empresa\n";
+    }
+}
+
+
 
 /**
  * recibe el id de una empresa y elimina todos los viajes de la empresa.
@@ -250,6 +273,19 @@ function eliminarEmpresa($objEmpresa){
     } else {
         echo "\e[1;37;41mLa empresa no se pudo eliminar.\e[0m\n";
     }
+}
+
+function borrarEmpresa(){
+    $abmEmpresa = new abmEmpresa();
+    $objEmpresa = seleccionarEmpresa();
+    $empresaBorrada = $abmEmpresa->eliminarEmpresa($objEmpresa);
+
+    if ($empresaBorrada) {
+        echo "\e[1;37;42mLa empresa fue borrada\e[0m\n";
+    }else {
+        echo "\e[1;37;41mError al intentarborrar la empresae[0m\n";
+    }
+
 }
 
 /**
@@ -799,6 +835,10 @@ function insertarResponsable(){
     }
 }
 
+
+//----------------------------------------********************
+//----------------------------------------********************
+//----------------------------------------********************
 
 /**
  * Convierte un array pasado por parametro en string
