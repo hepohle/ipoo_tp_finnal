@@ -1,9 +1,9 @@
 <?php
-include_once 'BaseDatos.php';
-include_once 'Pasajero.php';
-include_once 'Viaje.php';
-include_once 'ResponsableV.php';
-include_once 'Empresa.php';
+include_once 'datos/BaseDatos.php';
+include_once 'datos/Pasajero.php';
+include_once 'datos/Viaje.php';
+include_once 'datos/ResponsableV.php';
+include_once 'datos/Empresa.php';
 
 /**
  * \\\\ MENU PRINCIPAL /////

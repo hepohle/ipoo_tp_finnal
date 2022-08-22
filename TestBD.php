@@ -1,5 +1,5 @@
 <?php
-include_once 'BaseDatos.php';
+include_once 'datos/BaseDatos.php';
 
 $baseDatos = new BaseDatos();
 
