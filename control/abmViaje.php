@@ -67,8 +67,15 @@ class abmViaje {
         return $viajesCargados;
     }
 
-    public function checkLugar(){
-
+    public function checkLugar($id){
+        $objViaje = $this->traerViaje($id);
+        $pasajerosViaje = $objViaje->getcoleccionPasajeros();
+        $capacidad = $objViaje->getvcantmaxpasajeros();
+        $rta = false;
+        if (count($pasajerosViaje) < $capacidad) {
+            $rta = true;
+        }
+        return $rta;
     }
 
     public function viajeMismoDestino($destinoViaje){
@@ -84,7 +91,21 @@ class abmViaje {
         return $resp;
     }
 
+    public function eliminarViaje($objViaje){
+        $id = $objViaje->getidviaje();
 
+        $pasajero = new Pasajero();
+        $condicion = " idviaje = " . $id;
+        $pasajeros = $pasajero->listar($condicion);
+
+        $rta = false;
+
+        if (count($pasajeros)  == 0) {
+            $objViaje->eliminar();
+            $rta = true;
+        }
+        return $rta;
+    }
 }
 
 

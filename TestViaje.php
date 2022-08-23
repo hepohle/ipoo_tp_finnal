@@ -117,11 +117,18 @@ function menuEmpresas(){
  */
 function seleccionarEmpresa(){
     $abmEmpresa = new abmEmpresa();
+    do {
+        echo $abmEmpresa->listarEmpresas();
+        echo "Seleccione el ID de la empresa: \n";
+        $id = trim(fgets(STDIN));
+        $objEmpresa = $abmEmpresa->traerEmpresa($id);    
 
-    echo $abmEmpresa->listarEmpresas();
-    echo "Seleccione el ID de la empresa: \n";
-    $id = trim(fgets(STDIN));
-    $objEmpresa = $abmEmpresa->traerEmpresa($id);
+        if ($objEmpresa == null) {
+            echo "\n\e[1;37;41mEl ID ingresado no corresponde a una empresa.\e[0m\n";
+        }
+
+    } while ($objEmpresa == null);
+    
     return $objEmpresa;
 }
 
@@ -146,10 +153,8 @@ function cargarEmpresa(){
 
     if ($abmEmpresa->agregarEmpresa($nombreEmpresa, $direccionEmpresa)) {
         echo "\e[1;37;42mLa empresa se cargó con éxito!\e[0m\n";
-        
     }else {
-        echo "No pudo cargarse la empresa\n";
-        
+        echo "No pudo cargarse la empresa\n";   
     }
 }
 
@@ -328,25 +333,27 @@ function menuViajes(){
                 }
                 break;
             case '4': // ELIMINAR VIAJE
-                $viaje = new Viaje();
-                $arrViajes = $viaje->listar("");
-                strArray($arrViajes);
-                echo "Ingrese el ID del viaje para borrarlo:\n";
-                $idViaje = trim(fgets(STDIN));
-                if($viaje->buscar($idViaje)){
-                    if (count(listadoPasajeros($idViaje)) > 0) {
-                        echo "\e[1;37;42mEl viaje tiene pasajeros, quiere borrarlos? (si / no)\e[0m\n";
-                        $resp = strtoupper(trim(fgets(STDIN)));
-                        if ($resp == "SI") {
-                            eliminarPasajeros($viaje);
-                            eliminarViaje($viaje);
-                        }
-                    }else {
-                        eliminarViaje($viaje);
-                    }
-                } else {
-                    echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
-                }
+                borrarViaje();
+
+                // $viaje = new Viaje();
+                // $arrViajes = $viaje->listar("");
+                // strArray($arrViajes);
+                // echo "Ingrese el ID del viaje para borrarlo:\n";
+                // $idViaje = trim(fgets(STDIN));
+                // if($viaje->buscar($idViaje)){
+                //     if (count(listadoPasajeros($idViaje)) > 0) {
+                //         echo "\e[1;37;42mEl viaje tiene pasajeros, quiere borrarlos? (si / no)\e[0m\n";
+                //         $resp = strtoupper(trim(fgets(STDIN)));
+                //         if ($resp == "SI") {
+                //             eliminarPasajeros($viaje);
+                //             eliminarViaje($viaje);
+                //         }
+                //     }else {
+                //         eliminarViaje($viaje);
+                //     }
+                // } else {
+                //     echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
+                // }
                 break;
             case '5': // MOSTRAR PASAJEROS DEL VIAJE
                 mostrarPasajerosViaje();
@@ -360,13 +367,24 @@ function menuViajes(){
     }
 }
 
+/**
+ * ////////// FUNCIONES VIAJE \\\\\\\\\\
+ */
+
 function seleccionarViaje(){
     $abmViaje = new abmViaje();
 
-    echo $abmViaje->listarViajes();
-    echo "Seleccione el ID del viaje: \n";
-    $id = trim(fgets(STDIN));
-    $objViaje = $abmViaje->traerViaje($id);
+    do {
+        echo $abmViaje->listarViajes();
+        echo "Seleccione el ID del viaje: \n";
+        $id = trim(fgets(STDIN));
+        $objViaje = $abmViaje->traerViaje($id);
+
+        if ($objViaje == null) {
+            echo "\n\e[1;37;41mEl ID ingresado no corresponde a un viaje.\e[0m\n";
+        }
+
+    } while ($objViaje == null);
     return $objViaje;
 }
 
@@ -419,12 +437,22 @@ function mostrarPasajerosViaje(){
 /**
  * Retorna un boolean si hay o no lugar en el viaje
  */
-function hayLugar($idViaje){
-    $viaje = new Viaje();
-    $viaje->buscar($idViaje);
-    $lugares = $viaje->getvcantmaxpasajeros();
-    $pasajeros = listadoPasajeros($idViaje);
-    return count($pasajeros) < $lugares;
+function hayLugar($id){
+    $abmViaje = new abmViaje();
+    $rta = $abmViaje->checkLugar($id);
+    return $rta;
+}
+
+function borrarViaje(){
+    $abmViaje = new abmViaje();
+    $objViaje = seleccionarViaje();
+    $viajeBorrado = $abmViaje->eliminarViaje($objViaje);
+
+    if ($viajeBorrado) {
+        echo "\e[1;37;42mEl viaje fue borrado\e[0m\n";
+    }else {
+        echo "\e[1;37;41mEl viaje tiene pasajeros cargados no se puede eliminar.\e[0m\n";
+    }
 }
 
 function cargarViaje(){
