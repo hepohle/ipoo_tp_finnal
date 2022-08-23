@@ -334,26 +334,6 @@ function menuViajes(){
                 break;
             case '4': // ELIMINAR VIAJE
                 borrarViaje();
-
-                // $viaje = new Viaje();
-                // $arrViajes = $viaje->listar("");
-                // strArray($arrViajes);
-                // echo "Ingrese el ID del viaje para borrarlo:\n";
-                // $idViaje = trim(fgets(STDIN));
-                // if($viaje->buscar($idViaje)){
-                //     if (count(listadoPasajeros($idViaje)) > 0) {
-                //         echo "\e[1;37;42mEl viaje tiene pasajeros, quiere borrarlos? (si / no)\e[0m\n";
-                //         $resp = strtoupper(trim(fgets(STDIN)));
-                //         if ($resp == "SI") {
-                //             eliminarPasajeros($viaje);
-                //             eliminarViaje($viaje);
-                //         }
-                //     }else {
-                //         eliminarViaje($viaje);
-                //     }
-                // } else {
-                //     echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
-                // }
                 break;
             case '5': // MOSTRAR PASAJEROS DEL VIAJE
                 mostrarPasajerosViaje();
@@ -725,13 +705,14 @@ function menuResponsable(){
 
         switch ($opcion) {
             case '1': // VER RESPONSABLES
-                $responsable = new ResponsableV();
-                $responsables = $responsable->listar("");
-                if (count($responsables) > 0 ) {
-                    strArray($responsables);
-                } else {
-                    echo "\e[1;37;41mNo hay responsables cargados\e[0m\n";
-                }
+                verResponsables();
+                // $responsable = new ResponsableV();
+                // $responsables = $responsable->listar("");
+                // if (count($responsables) > 0 ) {
+                //     strArray($responsables);
+                // } else {
+                //     echo "\e[1;37;41mNo hay responsables cargados\e[0m\n";
+                // }
                 break;
             
             case '2': //CARGAR RESPONSABLE
@@ -802,6 +783,11 @@ function menuResponsable(){
                 break;
         }
     }
+}
+
+function verResponsables(){
+    $abmResponsableV = new abmResponsableV();
+    echo $abmResponsableV->listarResponsables();
 }
 
 function insertarResponsable(){
