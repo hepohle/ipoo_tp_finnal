@@ -87,62 +87,16 @@ function menuEmpresas(){
                 break;
 
             case '3': // MODIFICAR EMPRESA
-                // echo "Seleccione la empresa que quiere modificar: \n";
-                // $objEmpresa = new Empresa();
-                // $arrEmpresas = $objEmpresa->listar();
-                // strArray($arrEmpresas);
-                // $idempresa = trim(fgets(STDIN));
-                // modificarEmpresa($idempresa);
-
                 modificarEmpresa();
-                
-
-
             break;
                 
             case '4': //ELIMINAR EMPRESA
-                // echo "Seleccione la empresa que quiere eliminar: \n";
-                // $objEmpresa = new Empresa();
-                // $arrEmpresas = $objEmpresa->listar();
-                // strArray($arrEmpresas);
-                // $idempresa = trim(fgets(STDIN));
-                
-                // if ($objEmpresa->buscar($idempresa)) {
-                //     $viaje = new Viaje();
-                //     $condicion = 'idempresa = ' . $idempresa;
-                //     $viajesEmpresa = $viaje->listar($condicion);
-                //     if (!empty($viajesEmpresa)) {
-                //         echo "La empresa tiene viajes y pasajeros, desea borrar todo? (si / no)\n"; // si o no
-                //         $opcion = trim(fgets(STDIN));
-                //         if ($opcion == 'si') {
-                //             eliminarViajesEmpresa($objEmpresa);
-                //             eliminarEmpresa($objEmpresa);
-                //         }
-                //     }
-                //     if ($objEmpresa->eliminar()) {
-                //         echo "\e[1;37;42mLa empresa fue eliminada\e[0m\n";
-                //     }else {
-                //         echo "\e[1;37;41mNo se pudo eliminar la empresa\e[0m\n";
-                //     }
-                // }
-
                 borrarEmpresa();
-                break;
+            break;
 
             case '5': // MOSTRAR VIAJES DE EMPRESA
-                echo "Elija el ID de la empresa de la que desea ver sus viajes: \n";
-                $objEmpresa = new Empresa();
-                $arrEmpresas = $objEmpresa->listar();
-                strArray($arrEmpresas);
-                $idempresa = trim(fgets(STDIN));
-                $viajes = viajesEmpresa($idempresa);
-                if (count($viajes) > 0) {
-                    strArray($viajes);    
-                } else {
-                    echo "\e[1;37;41mLa empresa no tiene viajes cargados.\e[0m\n";
-                }
-                
-                break;
+                mostrarViajesEmpresa();
+            break;
                 
             case '6': // SALIR
                 $noSalir = false;
@@ -154,6 +108,9 @@ function menuEmpresas(){
     }
 }
 
+/**
+ * Devuelve el objeto empresa seleccionado
+ */
 function seleccionarEmpresa(){
     $abmEmpresa = new abmEmpresa();
 
@@ -168,7 +125,7 @@ function seleccionarEmpresa(){
 }
 
 /**
- * Devuelve un string con todos los datos de las empresas cargadas.
+ * Devuelve un string con todos los datos de todas las empresas cargadas.
  */
 function verEmpresas(){
     $abmEmpresa = new abmEmpresa();
@@ -195,7 +152,6 @@ function cargarEmpresa(){
     }
 }
 
-
 /**
  * Modifica una empresa.
  */
@@ -217,7 +173,13 @@ function modificarEmpresa(){
     }
 }
 
+function mostrarViajesEmpresa(){
+    $abmEmpresa = new abmEmpresa();
+    $objEmpresa = seleccionarEmpresa();
+    $id = $objEmpresa->getIdempresa();
 
+    echo $abmEmpresa->listarViajesEmpresa($id);
+}
 
 /**
  * recibe el id de una empresa y elimina todos los viajes de la empresa.
@@ -283,7 +245,7 @@ function borrarEmpresa(){
     if ($empresaBorrada) {
         echo "\e[1;37;42mLa empresa fue borrada\e[0m\n";
     }else {
-        echo "\e[1;37;41mError al intentarborrar la empresae[0m\n";
+        echo "\e[1;37;41mLa empresa tiene viajes cargados no se puede eliminar.\e[0m\n";
     }
 
 }

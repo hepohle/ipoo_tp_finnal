@@ -29,9 +29,14 @@ class Empresa
         $this->enombre = $enombre;
     }
     public function getColeccionViajes(){
-        return $this->enombre;
+        $viaje = new Viaje();
+        $condicion = "idempresa = " . $this->getIdempresa();
+        $viajesEmpresa = $viaje->listar($condicion);
+        $this->setColeccionViajes($viajesEmpresa);
+
+        return $this->coleccionViajes;
     }
-    public function setColleccionViajes($coleccionViajes){
+    public function setColeccionViajes($coleccionViajes){
         $this->enombre = $coleccionViajes;
     }
     public function getEdireccion(){
