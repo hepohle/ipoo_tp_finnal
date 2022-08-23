@@ -548,13 +548,7 @@ function viajeMismoDestino($destinoViaje){
 
         switch ($opcion) {
             case '1': // VER PASAJEROS
-                if (hayPasajero()) {
-                    $pasajero = new Pasajero();
-                    $pasajeros = $pasajero->listar("");
-                    strArray($pasajeros);
-                } else {
-                    echo "\e[1;37;41mNo hay pasajeros cargados!\e[0m\n";
-                }
+                verPasajeros();
                 break;
             case '2': // CARGAR PASAJERO5
                     cargarPasajero();
@@ -589,6 +583,11 @@ function viajeMismoDestino($destinoViaje){
         }
     }
  }
+
+function verPasajeros(){
+    $abmPasajero = new abmPasajero();
+    echo $abmPasajero->listarPasajeros();
+}
 
 function cargarPasajero(){
     $pasajero = new Pasajero();
@@ -706,13 +705,6 @@ function menuResponsable(){
         switch ($opcion) {
             case '1': // VER RESPONSABLES
                 verResponsables();
-                // $responsable = new ResponsableV();
-                // $responsables = $responsable->listar("");
-                // if (count($responsables) > 0 ) {
-                //     strArray($responsables);
-                // } else {
-                //     echo "\e[1;37;41mNo hay responsables cargados\e[0m\n";
-                // }
                 break;
             
             case '2': //CARGAR RESPONSABLE
