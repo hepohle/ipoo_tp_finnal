@@ -109,6 +109,10 @@ function menuEmpresas(){
 }
 
 /**
+ * ////////// FUNCIONES EMPRESA \\\\\\\\\\
+ */
+
+/**
  * Devuelve el objeto empresa seleccionado
  */
 function seleccionarEmpresa(){
@@ -117,11 +121,8 @@ function seleccionarEmpresa(){
     echo $abmEmpresa->listarEmpresas();
     echo "Seleccione el ID de la empresa: \n";
     $id = trim(fgets(STDIN));
-    
     $objEmpresa = $abmEmpresa->traerEmpresa($id);
-
     return $objEmpresa;
-
 }
 
 /**
@@ -173,6 +174,9 @@ function modificarEmpresa(){
     }
 }
 
+/**
+ * Muestra los viajes cargados de una empresa
+ */
 function mostrarViajesEmpresa(){
     $abmEmpresa = new abmEmpresa();
     $objEmpresa = seleccionarEmpresa();
@@ -237,6 +241,9 @@ function eliminarEmpresa($objEmpresa){
     }
 }
 
+/**
+ * Borra una empresa de la base de datos, si es posible.
+ */
 function borrarEmpresa(){
     $abmEmpresa = new abmEmpresa();
     $objEmpresa = seleccionarEmpresa();
@@ -292,14 +299,7 @@ function menuViajes(){
 
         switch ($opcion) {
             case '1': // VER VIAJES
-                $objViaje = new Viaje();
-                $arrViajes = $objViaje->listar();  
-                if (hayViaje()) {      
-                    strArray($arrViajes);
-                }else {
-                    echo "\e[1;37;41mNo hay viajes cargados\e[0m\n";
-                }
-                
+                verViajes();
                 break;
             case '2': // CARGAR VIAJE
                 if (hayEmpresa() && hayResponsable()) {
@@ -349,28 +349,7 @@ function menuViajes(){
                 }
                 break;
             case '5': // MOSTRAR PASAJEROS DEL VIAJE
-                if (hayViaje()) {
-                    $viaje = new Viaje();
-                    $arrViajes = $viaje->listar("");
-                    strArray($arrViajes);
-
-                    echo "Ingrese el ID del viaje para ver sus pasajeros: \n";
-                    $idViaje = trim(fgets(STDIN));
-
-                    if ($viaje->buscar($idViaje)) {
-                        $pasajeros = listadoPasajeros($idViaje);
-                        if (count($pasajeros) > 0) {
-                            strArray($pasajeros);
-                        } else {
-                            echo "\e[1;37;41mEl viaje no tiene pasajeros\e[0m\n";
-                        }
-                    } else {
-                        echo "\e[1;37;41mEl ID ingresado no corresponde a ningún viaje cargado.\e[0m\n";
-                    }
-
-                }else {
-                    echo "\e[1;37;41mNo hay viajes cargados.\e[0m\n";
-                }
+                mostrarPasajerosViaje();
                 break;
             case '6': // SALIR
                 $noSalir = false;
@@ -381,41 +360,60 @@ function menuViajes(){
     }
 }
 
+function seleccionarViaje(){
+    $abmViaje = new abmViaje();
+
+    echo $abmViaje->listarViajes();
+    echo "Seleccione el ID del viaje: \n";
+    $id = trim(fgets(STDIN));
+    $objViaje = $abmViaje->traerViaje($id);
+    return $objViaje;
+}
+
+function verViajes(){
+    $abmViaje = new abmViaje();
+    echo $abmViaje->listarViajes();
+}
+
 /**
  * Retorna un boolean si hay o no empresas cargadas.
  */
 function hayEmpresa(){
-    $objEmpresa = new Empresa();
-    $arrEmpresas = $objEmpresa->listar();
-    $hayEmpresaCargada = count($arrEmpresas) > 0;
-    return $hayEmpresaCargada;
+    $abmEmpresa = new abmEmpresa();
+    $rta = $abmEmpresa->checkEmpresa();
+    return $rta;
 }
 
 /**
  * Retorna un boolean si hay o no Responsables cargados.
  */ 
 function hayResponsable(){
-    $objResponsable = new ResponsableV();
-    $arrResponsable = $objResponsable->listar();
-    $hayResponsableCargado = count($arrResponsable) > 0;
-    return $hayResponsableCargado;
+    $abmResponsableV = new abmResponsableV();
+    $rta = $abmResponsableV->checkResponsable();
+    return $rta;
 }
 
 /**
  * Retorna un boolean si hay o no viajes
  */
 function hayViaje(){
-    $objViaje = new Viaje();
-    $arrViajes = $objViaje->listar();
-    $hayViajeCargado = count($arrViajes) > 0;
-    return $hayViajeCargado;
+    $abmViaje = new abmViaje();
+    $rta = $abmViaje->checkViaje();
+    return $rta;
 }
 
 function hayPasajero(){
-    $objPasajero = new Pasajero();
-    $arrPasajeros = $objPasajero->listar("");
-    $hayPasajeroCargado = count($arrPasajeros) > 0;
-    return $hayPasajeroCargado;
+    $abmPasajero = new abmPasajero();
+    $rta = $abmPasajero->checkPasajero();
+    return $rta;
+}
+
+function mostrarPasajerosViaje(){
+    $abmViaje = new abmViaje();
+    $objViaje = seleccionarViaje();
+    $id = $objViaje->getidviaje();
+
+    echo $abmViaje->listarPasajerosViaje($id);
 }
 
 /**
@@ -430,13 +428,13 @@ function hayLugar($idViaje){
 }
 
 function cargarViaje(){
-    $viaje = new Viaje();
+    $abmViaje = new abmViaje();
     echo "Ingrese los datos del viaje: \n";
 
     do {//Comprueba que no haya viajes al mismo destino que se intenta cargar.
         echo "Destino: \n";
         $destino = trim(fgets(STDIN));
-        $hayViajesMismoDestino = viajeMismoDestino($destino);
+        $hayViajesMismoDestino = $abmViaje->viajeMismoDestino($destino);
         if ($hayViajesMismoDestino) {
             echo "\e[1;37;41mYa hay un viaje cargado a ese destino\e[0m\n";
         }
@@ -448,23 +446,23 @@ function cargarViaje(){
     do {// Comprueba que el ID corresponda a una empresa cargada.
         echo "ID de la Empresa: \n";
         $idEmpresa = trim(fgets(STDIN));
-        $empresa = new Empresa();
-        $hayEmpresa = $empresa->buscar($idEmpresa);
-        if (!$hayEmpresa) {
+        $abmEmpresa = new abmEmpresa();
+        $objEmpresa = $abmEmpresa->traerEmpresa($idEmpresa);
+        if ($objEmpresa == null) {
             echo "\e[1;37;41mEl ID ingresado no corresponde a ninguna empresa cargada.\e[0m\n";
         }
-    } while (!$hayEmpresa);
+    } while ($objEmpresa == null);
 
     do {// Comprueba que el número ingresado corresponda a un empleado cargado.
         echo "Número de empleado responsable: \n";
         $nroResponsable = trim(fgets(STDIN));
-        $responsable = new ResponsableV();
-        $hayResponsable = $responsable->buscar($nroResponsable);
+        $abmResponsable = new abmResponsableV();
+        $objResponsable = $abmResponsable->traerResponsable($nroResponsable);
 
-        if (!$hayResponsable) {
+        if ($objResponsable == null) {
             echo "\e[1;37;41mEl número ingresado no coresponde a ningún empleado cargado \e[0m\n";
         }
-    } while (!$hayResponsable);
+    } while ($objResponsable == null);
 
     echo "Importe: \n";
     $importe = trim(fgets(STDIN));
@@ -475,14 +473,13 @@ function cargarViaje(){
     echo "Ida y vuelta: (si / no)\n";
     $idaVuelta = trim(fgets(STDIN));
 
-    $viaje->cargarDatos($destino, $cantMaxPasajeros, $empresa, $responsable, $importe, $tipoAsiento, $idaVuelta);
+    $cargado = $abmViaje->agregarViaje($destino, $cantMaxPasajeros, $objEmpresa, $objResponsable, $importe, $tipoAsiento, $idaVuelta);
 
-    if ($viaje->insertar()) {
-        echo "El viaje fue cargado\n";
+    if ($cargado) {
+        echo "\n\e[1;37;42mEl viaje fue cargado\e[0m\n";
     } else {
-        echo $viaje->getmensajeoperacion();
+        echo "\n\e[1;37;41mError al cargar el viaje\e[0m\n";
     }
-    return $viaje;
 }
 
 function modificarViaje($viaje){

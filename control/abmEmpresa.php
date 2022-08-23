@@ -22,7 +22,7 @@ class abmEmpresa{
         $objEmpresa = new Empresa();
         $coleccionEmpresas = $objEmpresa->listar();
 
-        $datosEmpresas = "\n\e[1;37;42mEmpresas: \e[0m\n";
+        $datosEmpresas = "\n\e[1;37;42mListado de Empresas: \e[0m\n";
 
         if (count($coleccionEmpresas) > 0) {
             foreach ($coleccionEmpresas as $empresa) {
@@ -50,7 +50,7 @@ class abmEmpresa{
         $condicion = " idempresa = " . $id;
         $viajes = $viaje->listar($condicion);
 
-        $datosViajes = "\n\e[1;37;42mViajes: \e[0m\n";
+        $datosViajes = "\n\e[1;37;42mListado de Viajes: \e[0m\n";
         
         if (count($viajes) > 0) {
             foreach ($viajes as $viaje) {
@@ -85,6 +85,13 @@ class abmEmpresa{
             $rtaEliminar = true;
         }
         return $rtaEliminar;
+    }
+
+    public function checkEmpresa(){
+        $empresa = new Empresa();
+        $arrayEmpresas = $empresa->listar();
+        $empresasCargadas = count($arrayEmpresas) > 0;
+        return $empresasCargadas;
     }
 }
 

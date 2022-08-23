@@ -51,6 +51,10 @@ class Viaje
         return $this->idayvuelta;
     }
     public function getcoleccionPasajeros(){
+        $pasajero = new Pasajero();
+        $condicion = "idviaje = " . $this->getidviaje();
+        $coleccionPasajeros = $pasajero->listar($condicion);
+        $this->setcoleccionPasajeros($coleccionPasajeros);
         return $this->coleccionPasajeros;
     }
     public function getmensajeoperacion(){
@@ -136,7 +140,7 @@ class Viaje
         $str .= "Responsable: " . $responsableStr . "\n";
         $str .= "Importe: $" . $this->getvimporte() . "\n";
         $str .= "Tipo de Asiento: " . $this->gettipoasiento() . "\n";
-        $str .= "Pasajeros: " . $this->strArrPasajeros(). "\n";
+        //$str .= "Pasajeros: " . $this->strArrPasajeros(). "\n";
         $str .= "Ida y Vuelta: " . $this->getidayvuelta() . "\n";
         return $str;
     }
